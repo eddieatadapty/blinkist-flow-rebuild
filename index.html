@@ -1,0 +1,1749 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- flow-rebuild template (Growth Audit, v3: + walkthrough video, phone view/QR, localization, paywall today vs proposed). Replace every double-brace placeholder, everything between
+     the SCREENS markers, and the CONTENT json. Rules that brand-check.py enforces are marked RULE.
+     Reference builds: eddieatadapty.github.io/datacamp-flow-rebuild-v2 · bterzic123.github.io/planner5d-flow-rebuild-v2 -->
+<title>Blinkist Growth Audit</title>
+<meta name="description" content="Five ideas to turn more Blinkist users into subscribers, each built into a clickable version of Blinkist's own onboarding. Prepared by Adapty.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- the APP's font (brand.json fonts, or the closest Google family) + a mono if the app shows code -->
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* BRAND:START — the only place the APP's colours are written as literals. RULE: every value here is
+   copied from brand.json / a sampled pixel of the app's own screens; never "improved". Used only inside the phone. */
+:root{
+  --b-primary:#2ee081;      /* brand-green (blinkist.com token) = CTA on their screens */
+  --b-primary-ink:#033049;  /* brand-midnight: text on the green button */
+  --b-bg:#042134;           /* sampled: onboarding + paywall background */
+  --b-bg2:#052234;          /* sampled: welcome / modal background */
+  --b-surface:#033049;      /* brand-midnight: topic rows, cards */
+  --b-panel:#0a314c;        /* sampled: the paywall's cancel panel */
+  --b-ink:#ffffff;
+  --b-ink2:#bac8ce;         /* neutral-light-grey token */
+  --b-line:#054f7a;         /* extended-midnight-5 */
+  --b-accent2:#0266f2;      /* brand-blue */
+  --b-blue:#0266f2;         /* "15 mins", the 100% ring, ticks */
+  --b-star:#fdbe21;         /* summer-yellow-4: rating stars */
+  --b-grad:linear-gradient(180deg,#0266f2 0%,#0266f2 55%,#2ee081 100%); /* the trial timeline bar */
+  --b-radius:8px;
+  --b-pill:4px;
+  --b-font:'Figtree',-apple-system,system-ui,sans-serif;
+  --b-mono:'Figtree',-apple-system,system-ui,sans-serif;
+}
+/* BRAND:END */
+/* A second app family (e.g. a mono for code) is applied HERE, never in SCREENS css (brand-check allows only
+   var(--b-font) there). Prefix with .scr so it beats the screens' font shorthands, e.g.:
+   .scr .code,.scr .instr code{font-family:var(--b-mono)} */
+
+/* ================= the audit page — Adapty's, not the app's. Light, Apple-style. ================= */
+:root{
+  color-scheme:light;
+  --st-ground:#f5f5f7; --st-card:#ffffff; --st-ink:#1d1d1f; --st-ink2:#6e6e73; --st-ink3:#86868b;
+  --st-hair:rgba(0,0,0,.09); --st-link:#0066cc;
+  --st-accent:#033049;      /* dark brand colour of the APP: buttons, the outcome band */
+  --st-hi:#2ee081;          /* bright brand colour of the APP: outcome numbers on the band, idea dots */
+  --st-mark:rgba(46,224,129,.5); /* --st-hi at ~.5 alpha: the highlighter under impact numbers */
+  --st-font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+html,body{margin:0}
+body{background:var(--st-ground);color:var(--st-ink);font-family:var(--st-font);-webkit-font-smoothing:antialiased;font-size:17px;line-height:1.47}
+.au-wrap{max-width:1080px;margin:0 auto;padding-inline:22px}
+a{color:var(--st-link)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--st-link);outline-offset:3px;border-radius:6px}
+mark{background:linear-gradient(transparent 62%,var(--st-mark) 62%,var(--st-mark) 92%,transparent 92%);color:inherit;padding:0 .04em}
+
+/* nav */
+.au-nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(245,245,247,.8);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--st-hair)}
+.au-nav-in{max-width:1080px;margin:0 auto;padding-inline:22px;height:52px;display:flex;align-items:center;gap:26px}
+.au-brand{display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0}
+.au-brand img{width:26px;height:26px;border-radius:7px;flex:none}
+.au-brand span{font-size:15px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
+.au-brand small{font-size:15px;font-weight:400;color:var(--st-ink2)}
+.au-nav a{font-size:13px;color:var(--st-ink);text-decoration:none;opacity:.82}
+.au-nav a:hover{opacity:1}
+@media (max-width:560px){.au-nav a.au-opt{display:none}.au-brand small{display:none}}
+
+/* hero */
+.au-top-hero{text-align:center;padding-top:clamp(56px,9vw,96px);overflow:hidden;position:relative}
+.au-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--st-ink);margin:0 0 14px}
+.au-eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-display{font-size:clamp(60px,12vw,120px);line-height:.98;font-weight:700;letter-spacing:-.05em;margin:0}
+.au-lede{font-size:clamp(23px,3.4vw,34px);line-height:1.16;font-weight:600;letter-spacing:-.022em;max-width:760px;margin:22px auto 0;text-wrap:balance}
+.au-lede span{color:var(--st-ink2)}
+.au-byline{font-size:14px;color:var(--st-ink3);margin:18px 0 0}
+.au-ctas{display:flex;gap:26px;justify-content:center;align-items:center;margin-top:30px;flex-wrap:wrap}
+.au-btn{display:inline-block;background:var(--st-accent);color:#fff;border-radius:980px;padding:12px 23px;font-size:17px;font-weight:500;text-decoration:none;border:0;cursor:pointer}
+.au-btn:hover{filter:brightness(1.25)}
+.au-lnk{background:none;border:0;padding:0;color:var(--st-link);font-size:17px;text-decoration:none;cursor:pointer}
+.au-lnk::after{content:"\00a0›"}
+.au-lnk:hover{text-decoration:underline}
+.au-phones{display:flex;justify-content:center;align-items:flex-start;margin-top:clamp(40px,6vw,64px);height:clamp(300px,52vw,560px)}
+.au-hp{flex:none;border:0;padding:0;background:none;cursor:pointer;width:27%;max-width:290px;margin:0 -2.5%;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.au-hp img{display:block;width:100%;height:auto;filter:drop-shadow(0 28px 50px rgba(0,0,0,.2))}
+.au-hp.au-c{width:31%;max-width:330px;z-index:2}
+.au-hp.au-l{transform:translateY(12%) rotate(-5deg)}
+.au-hp.au-r{transform:translateY(12%) rotate(5deg)}
+.au-hp.au-l:hover{transform:translateY(9%) rotate(-5deg)}.au-hp.au-r:hover{transform:translateY(9%) rotate(5deg)}.au-hp.au-c:hover{transform:translateY(-3%)}
+
+/* sections */
+.au-sec{padding-block:clamp(72px,10vw,120px)}
+.au-sec.au-white{background:var(--st-card)}
+.au-kicker{font-size:15px;font-weight:600;color:var(--st-ink2);margin:0 0 12px}
+.au-h2{font-size:clamp(34px,5.2vw,56px);line-height:1.06;font-weight:700;letter-spacing:-.035em;margin:0;text-wrap:balance}
+.au-h2 span{color:var(--st-ink3)}
+.au-split{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,6vw,80px);align-items:end}
+.au-split p{margin:0;font-size:clamp(17px,1.7vw,21px);line-height:1.45;color:var(--st-ink2);letter-spacing:-.01em}
+.au-split p b{color:var(--st-ink);font-weight:600}
+.au-split p + p{margin-top:16px}
+.au-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:clamp(48px,7vw,80px);border-top:1px solid var(--st-hair)}
+.au-stat{padding:28px 20px 0 0}
+.au-stat b{display:block;font-size:clamp(40px,5.5vw,64px);font-weight:700;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.au-stat span{display:block;font-size:15px;color:var(--st-ink2);margin-top:10px;max-width:22ch}
+.au-notes{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px);margin-top:clamp(48px,7vw,72px)}
+.au-note h3{font-size:19px;font-weight:600;letter-spacing:-.015em;margin:0 0 8px}
+.au-note p{margin:0;font-size:15.5px;line-height:1.5;color:var(--st-ink2)}
+.au-note .au-ic{width:36px;height:36px;border-radius:10px;background:var(--st-ground);display:grid;place-items:center;margin-bottom:16px}
+.au-note .au-ic svg{width:19px;height:19px;stroke:var(--st-accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ideas */
+.au-ideas-h{margin-bottom:clamp(32px,5vw,48px)}
+.au-list{background:var(--st-card);border-radius:28px;padding-inline:clamp(20px,4vw,44px)}
+.au-idea{display:grid;grid-template-columns:56px 1fr 220px;gap:20px;align-items:start;padding-block:clamp(26px,3.5vw,36px);border-top:1px solid var(--st-hair)}
+.au-idea:first-child{border-top:0}
+.au-idea .au-num{font-size:15px;font-weight:600;color:var(--st-ink3);font-variant-numeric:tabular-nums;padding-top:6px}
+.au-idea h3{font-size:clamp(21px,2.4vw,26px);line-height:1.2;font-weight:600;letter-spacing:-.022em;margin:0 0 8px}
+.au-idea p{margin:0 0 12px;font-size:17px;line-height:1.5;color:var(--st-ink2);max-width:58ch}
+.au-idea p code{font:600 15px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--st-ink);background:var(--st-ground);padding:2px 7px;border-radius:6px}
+.au-idea .au-lnk{font-size:15px}
+.au-imp{text-align:right}
+.au-imp .au-v{font-size:clamp(30px,3.6vw,40px);font-weight:700;letter-spacing:-.035em;line-height:1;font-variant-numeric:tabular-nums;color:var(--st-accent)}
+.au-imp .au-l{font-size:13.5px;color:var(--st-ink2);margin-top:8px}
+.au-band{margin-top:20px;background:var(--st-accent);color:#fff;border-radius:28px;padding:clamp(32px,5vw,56px);display:grid;grid-template-columns:1fr auto;gap:clamp(28px,5vw,64px);align-items:center}
+.au-band .au-k{font-size:15px;font-weight:600;color:rgba(255,255,255,.62);margin:0 0 10px}
+.au-band h3{font-size:clamp(24px,3vw,32px);line-height:1.18;font-weight:600;letter-spacing:-.022em;margin:0;text-wrap:balance}
+.au-band .au-fn{font-size:13px;line-height:1.5;color:rgba(255,255,255,.55);margin:16px 0 0;max-width:52ch}
+.au-nums{display:flex;gap:clamp(28px,4vw,48px)}
+.au-nums small{display:block;font-size:13px;color:rgba(255,255,255,.62)}
+.au-nums b{display:block;font-size:clamp(48px,6.5vw,76px);font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--st-hi);font-variant-numeric:tabular-nums;margin:4px 0 8px}
+.au-nums span{font-size:14px;color:rgba(255,255,255,.8)}
+.au-band .au-btn{background:var(--st-hi);color:var(--st-accent);font-weight:600;margin-top:26px}
+
+/* prototype */
+.au-proto-h{text-align:center;max-width:720px;margin:0 auto}
+.au-proto-h p{font-size:clamp(17px,1.7vw,21px);color:var(--st-ink2);margin:14px 0 0}
+.au-seg{display:flex;gap:4px;justify-content:center;margin:clamp(28px,4vw,40px) auto 0;padding:4px;background:var(--st-ground);border-radius:980px;width:max-content;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.au-seg::-webkit-scrollbar{display:none}
+.au-chip{flex:none;display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--st-ink2);font-size:13.5px;font-weight:500;padding:8px 14px;border-radius:980px;cursor:pointer;white-space:nowrap}
+.au-chip:hover{color:var(--st-ink)}
+.au-chip.on{background:var(--st-card);color:var(--st-ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.au-chip i{font-style:normal;font-size:11px;font-weight:700;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:var(--st-hi);color:var(--st-accent)}
+.au-stage{display:grid;grid-template-columns:auto minmax(0,420px);gap:clamp(32px,6vw,72px);justify-content:center;align-items:center;margin-top:clamp(28px,4vw,44px)}
+.phone{width:390px;height:844px;border-radius:56px;padding:10px;background:#0b0d10;box-shadow:0 0 0 1.5px #3a3d42,0 40px 90px rgba(0,0,0,.25);max-width:calc(100vw - 44px)}
+.phone-in{position:relative;width:100%;height:100%;border-radius:46px;overflow:hidden;background:var(--b-bg)}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:120px;height:34px;border-radius:20px;background:#000;z-index:9}
+.sbar{position:absolute;top:0;left:0;right:0;height:52px;display:flex;justify-content:space-between;align-items:center;padding:4px 32px 0;font:600 15px -apple-system,system-ui,sans-serif;color:var(--b-ink);z-index:8;pointer-events:none}
+.au-pn{background:var(--st-ground);border-radius:28px;padding:clamp(26px,3.5vw,38px)}
+.au-pn-k{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--st-ink)}
+.au-pn-k i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-pn-k.au-ctx{color:var(--st-ink2)}.au-pn-k.au-ctx i{background:var(--st-ink3);box-shadow:none}
+.au-pn-t{font-size:clamp(24px,2.6vw,30px);line-height:1.12;font-weight:700;letter-spacing:-.028em;margin:10px 0 14px;text-wrap:balance}
+.au-pn-h{margin:0;font-size:17px;line-height:1.55;color:var(--st-ink2)}
+.au-pn-h b{color:var(--st-ink);font-weight:600}
+.au-pn-o{margin-top:24px;padding-top:22px;border-top:1px solid var(--st-hair)}
+.au-pn-o .au-lab{font-size:13px;font-weight:600;color:var(--st-ink3)}
+.au-pn-o .au-val{font-size:clamp(38px,4.4vw,50px);font-weight:700;letter-spacing:-.04em;line-height:1.05;color:var(--st-accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.au-pn-o .au-sub{font-size:14px;color:var(--st-ink2);margin-top:4px}
+.au-pn-a{margin:18px 0 0;font-size:14px;line-height:1.5;color:var(--st-ink2)}
+.au-pn-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:28px;padding-top:18px;border-top:1px solid var(--st-hair);font-size:13px;color:var(--st-ink3)}
+.au-pn-nav button{background:var(--st-card);border:0;border-radius:980px;padding:8px 15px;font-size:14px;font-weight:500;color:var(--st-ink);cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.au-pn-nav button:disabled{opacity:.35;cursor:default}
+.au-hint{text-align:center;font-size:14px;color:var(--st-ink3);margin:22px 0 0}
+
+/* footer */
+.au-foot{padding-block:56px 72px;border-top:1px solid var(--st-hair)}
+.au-foot details{border-bottom:1px solid var(--st-hair);padding-bottom:18px}
+.au-foot summary{cursor:pointer;font-size:17px;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.au-foot summary::-webkit-details-marker{display:none}
+.au-foot summary::after{content:"+";font-size:24px;font-weight:300;color:var(--st-ink2)}
+.au-foot details[open] summary::after{content:"−"}
+.au-srcs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 48px;margin-top:18px}
+.au-srcs h4{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--st-ink3);margin:18px 0 6px}
+.au-srcs dl{margin:0}.au-srcs dt{font-size:14.5px;font-weight:600;margin-top:10px}
+.au-srcs dd{margin:3px 0 0;font-size:14px;line-height:1.5;color:var(--st-ink2)}
+.au-fine{font-size:12.5px;line-height:1.6;color:var(--st-ink3);margin:22px 0 0;max-width:80ch}
+.au-cta-line{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:36px}
+.au-cta-line p{margin:0;font-size:clamp(19px,2.2vw,24px);font-weight:600;letter-spacing:-.02em;max-width:34ch}
+
+@media (max-width:900px){
+  .au-split,.au-band{grid-template-columns:1fr}
+  .au-notes{grid-template-columns:1fr}
+  .au-idea{grid-template-columns:40px 1fr}
+  .au-imp{grid-column:2;text-align:left;display:flex;align-items:baseline;gap:10px}
+  .au-imp .au-l{margin:0}
+  .au-imp .au-v{white-space:nowrap}
+  .au-stage{grid-template-columns:1fr;justify-items:center}
+  .au-pn{width:100%;max-width:520px}
+  .au-srcs{grid-template-columns:1fr}
+}
+@media (max-width:560px){.au-stats{grid-template-columns:1fr}.au-stat{padding:22px 0 0}.au-nums{flex-direction:column;gap:18px}}
+
+/* ================= extras (audit side): video, language, phone view + QR, paywall today vs proposed, ?tour ================= */
+[hidden]{display:none!important}
+/* the device never scrolls: off-screen slides would otherwise make it scrollable by focus / scrollIntoView */
+.phone-in,.scr{overflow:clip}
+/* hero: walkthrough link */
+.au-play::before{content:"▶";font-size:.72em;margin-right:7px;position:relative;top:-1px}
+/* video dialog */
+.au-vid{border:0;padding:0;background:transparent;max-width:min(1120px,94vw);width:100%;overflow:visible}
+.au-vid::backdrop{background:rgba(0,0,0,.74);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.au-vid-in{background:#000;border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.au-vid video{display:block;width:100%;aspect-ratio:16/9;background:#000}
+.au-vid-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 4px 0;font-size:14px}
+.au-vid-bar a{color:#fff;opacity:.85}
+.au-vid-x{background:rgba(255,255,255,.16);border:0;color:#fff;border-radius:980px;padding:8px 16px;font-size:14px;cursor:pointer}
+/* language switch */
+.au-langrow{display:flex;justify-content:center;align-items:center;gap:12px;margin:18px 0 0;font-size:13.5px;color:var(--st-ink2);flex-wrap:wrap}
+.au-lsw{display:inline-flex;gap:2px;padding:3px;background:var(--st-ground);border-radius:980px}
+.au-lsw button{border:0;background:none;padding:6px 13px;border-radius:980px;font-size:13.5px;font-weight:500;color:var(--st-ink2);cursor:pointer;white-space:nowrap}
+.au-lsw button.on{background:var(--st-card);color:var(--st-ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+/* QR card (desktop) / full-screen button (phone) */
+.au-qr{display:flex;align-items:center;gap:18px;margin:26px auto 0;max-width:500px;background:var(--st-ground);border-radius:22px;padding:14px 22px 14px 14px}
+.au-qr img{width:112px;height:112px;border-radius:12px;image-rendering:pixelated;flex:none;background:#fff}
+.au-qr b{display:block;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.au-qr p{margin:4px 0 0;font-size:14.5px;line-height:1.45;color:var(--st-ink2)}
+.au-mobw{display:none;text-align:center;margin-top:22px}
+@media (max-width:900px){.au-qr{display:none}.au-mobw{display:block}}
+/* paywall: today vs proposed */
+.au-cmp{display:grid;grid-template-columns:minmax(0,290px) minmax(0,1fr) minmax(0,290px);gap:clamp(24px,4vw,52px);align-items:center;margin-top:clamp(32px,5vw,52px)}
+.au-cmp figure{margin:0;text-align:center}
+.au-cmp figure img{display:block;width:100%;height:auto;filter:drop-shadow(0 24px 44px rgba(0,0,0,.18))}
+.au-cmp figcaption{margin-top:14px;font-size:15px;font-weight:600}
+.au-cmp figcaption span{color:var(--st-ink2);font-weight:400}
+.au-cmp-go{border:0;padding:0;background:none;cursor:pointer;display:block;width:100%;transition:transform .3s}
+.au-cmp-go:hover{transform:translateY(-4px)}
+.au-chg{list-style:none;margin:0;background:var(--st-card);border-radius:24px;padding:4px clamp(18px,2.4vw,28px)}
+.au-chg li{padding:15px 0;border-top:1px solid var(--st-hair)}
+.au-chg li:first-child{border-top:0}
+.au-chg h4{margin:0 0 7px;font-size:16px;font-weight:600;letter-spacing:-.01em;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.au-chg h4 i{font-style:normal;font-size:12px;font-weight:600;color:var(--st-accent);background:var(--st-mark);border-radius:6px;padding:2px 8px;white-space:nowrap}
+.au-was,.au-now{display:grid;grid-template-columns:78px 1fr;gap:8px;font-size:14.5px;line-height:1.42}
+.au-was{color:var(--st-ink3)}
+.au-now{color:var(--st-ink);margin-top:3px}
+.au-was em,.au-now em{font-style:normal;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding-top:2px}
+.au-now em{color:var(--st-link)}
+.au-kept{margin:22px 0 0;font-size:14px;color:var(--st-ink2);text-align:center}
+@media (max-width:900px){.au-cmp{grid-template-columns:1fr 1fr;gap:18px}.au-chg{grid-column:1 / -1;order:3}.au-was,.au-now{grid-template-columns:70px 1fr}}
+
+/* ?app — the prototype full screen on a real phone, with a bar that opens the idea panel */
+html.appmode,html.appmode body{height:100%;overflow:hidden;background:#000}
+html.appmode .au-nav,html.appmode .au-top-hero,html.appmode #why,html.appmode #ideas,html.appmode #compare,html.appmode .au-foot,
+html.appmode .au-proto-h,html.appmode #prototype .au-langrow,html.appmode #chips,html.appmode .au-hint,html.appmode .au-qr,html.appmode .au-mobw{display:none!important}
+html.appmode #prototype{padding:0;background:#000}
+html.appmode #prototype .au-wrap{padding:0;max-width:none}
+html.appmode .au-stage{display:block;margin:0}
+html.appmode .phone{position:fixed;top:0;left:0;right:0;margin:0 auto;width:min(100%,480px);height:calc(100% - 56px - env(safe-area-inset-bottom,0px));max-width:none;border-radius:0;padding:0;box-shadow:none;background:#000}
+html.appmode .phone-in{border-radius:0}
+html.appmode .island,html.appmode .sbar{display:none}
+html.appmode .scr .s-pad{padding-top:max(58px,calc(env(safe-area-inset-top,0px) + 16px))}
+html.appmode .scr .s-x,html.appmode .scr .s-lang{top:max(54px,calc(env(safe-area-inset-top,0px) + 10px))}
+.au-appbar,.au-scrim{display:none}
+html.appmode .au-appbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:70;height:calc(56px + env(safe-area-inset-bottom,0px));padding:0 12px env(safe-area-inset-bottom,0px) 16px;align-items:center;gap:12px;background:#0b0b0c;border-top:1px solid rgba(255,255,255,.1);color:#fff}
+.au-ab-why{flex:1;min-width:0;display:flex;align-items:center;gap:9px;background:none;border:0;color:#fff;font-size:14px;font-weight:500;text-align:left;cursor:pointer;padding:0}
+.au-ab-why i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);flex:none}
+.au-ab-why span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.au-ab-why em{font-style:normal;color:rgba(255,255,255,.6);margin-left:auto;flex:none;font-size:13px}
+.au-appbar .au-lsw{background:rgba(255,255,255,.12)}
+.au-appbar .au-lsw button{color:rgba(255,255,255,.75);padding:5px 11px}
+.au-appbar .au-lsw button.on{background:#fff;color:#000}
+html.appmode #panel{position:fixed;left:0;right:0;bottom:0;z-index:80;max-width:none;width:auto;margin:0 auto;border-radius:24px 24px 0 0;max-height:78%;overflow:auto;transform:translateY(105%);transition:transform .3s cubic-bezier(.3,.7,.2,1);padding-bottom:calc(26px + env(safe-area-inset-bottom,0px))}
+html.appmode.au-open #panel{transform:none}
+html.appmode.au-open .au-scrim{display:block;position:fixed;inset:0;z-index:75;background:rgba(0,0,0,.5)}
+
+/* ?tour — 1280×720 walkthrough frames (record-video.sh renders them into assets/walkthrough.mp4) */
+.au-tour{display:none}
+html.tourmode,html.tourmode body{overflow:hidden;background:var(--st-ground)}
+html.tourmode body *{visibility:hidden}
+html.tourmode .phone,html.tourmode .phone *,html.tourmode .au-tour,html.tourmode .au-tour *{visibility:visible}
+html.tourmode .phone{position:fixed;left:170px;top:44px;margin:0;transform:scale(.755);transform-origin:0 0;box-shadow:0 0 0 1.5px #3a3d42,0 34px 80px rgba(0,0,0,.22);z-index:5;max-width:none}
+html.tourmode .au-tour{display:block;position:fixed;inset:0;z-index:6;pointer-events:none;color:var(--st-ink)}
+.au-tb{position:absolute;left:590px;top:30px;display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600}
+.au-tb img{width:26px;height:26px;border-radius:7px}
+.au-tb small{font-size:16px;font-weight:400;color:var(--st-ink2)}
+.au-tby{position:absolute;right:48px;top:32px;font-size:14px;color:var(--st-ink3)}
+.au-tcap{position:absolute;left:590px;right:60px;top:50%;transform:translateY(-50%)}
+.au-tk{display:flex;align-items:center;gap:9px;font-size:17px;font-weight:600}
+.au-tk i{width:9px;height:9px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-tk.au-ctx{color:var(--st-ink2)}.au-tk.au-ctx i{background:var(--st-ink3);box-shadow:none}
+.au-tt{font-size:46px;line-height:1.06;font-weight:700;letter-spacing:-.035em;margin:14px 0 14px;text-wrap:balance}
+.au-tl{font-size:23px;line-height:1.36;color:var(--st-ink2);letter-spacing:-.01em;margin:0;max-width:28ch}
+.au-to{margin-top:28px;padding-top:22px;border-top:1px solid var(--st-hair)}
+.au-to small{display:block;font-size:14px;font-weight:600;color:var(--st-ink3)}
+.au-to b{display:inline-block;font-size:62px;font-weight:700;letter-spacing:-.045em;line-height:1.08;color:var(--st-accent);margin-top:4px}
+.au-to span{display:block;font-size:16px;color:var(--st-ink2);margin-top:2px}
+.au-tprog{position:absolute;left:48px;right:48px;bottom:22px;height:4px;border-radius:3px;background:var(--st-hair);overflow:hidden}
+.au-tprog i{display:block;height:100%;background:var(--st-hi)}
+.au-ttap{position:absolute;left:0;top:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.5);box-shadow:0 0 0 2.5px rgba(255,255,255,.9),0 6px 16px rgba(0,0,0,.35);opacity:0}
+.au-tintro,.au-tend{position:absolute;inset:0;background:var(--st-ground);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0}
+.au-tintro .au-lede{margin-top:18px}
+.au-te-h{font-size:46px;line-height:1.08;font-weight:700;letter-spacing:-.035em;margin:0;max-width:18ch;text-wrap:balance}
+.au-te-n{display:flex;gap:64px;margin-top:30px}
+.au-te-n small{display:block;font-size:14px;color:var(--st-ink2)}
+.au-te-n b{display:block;font-size:76px;font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--st-accent);margin:4px 0 6px}
+.au-te-n span{font-size:15px;color:var(--st-ink2)}
+.au-te-q{display:flex;align-items:center;gap:18px;margin-top:34px;background:var(--st-card);border-radius:20px;padding:12px 24px 12px 12px;text-align:left}
+.au-te-q img{width:104px;height:104px;border-radius:10px;image-rendering:pixelated}
+.au-te-q b{display:block;font-size:18px;font-weight:600}
+.au-te-q span{display:block;font-size:15px;color:var(--st-link);margin-top:3px}
+.au-te-f{position:absolute;bottom:44px;left:0;right:0;font-size:13px;color:var(--st-ink3);margin:0}
+
+/* ---------- screen engine (layout only, no colours) ---------- */
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--b-bg);color:var(--b-ink);font-family:var(--b-font);
+     transform:translateX(100%);transition:transform .32s cubic-bezier(.3,.7,.2,1);overflow:hidden;text-align:left;line-height:normal;font-size:16px}
+.scr.is-active{transform:none;z-index:2}.scr.is-past{transform:translateX(-28%)}.scr.under{transform:none;z-index:1}
+.scr.sheet{transform:translateY(100%)}.scr.sheet.is-active{transform:none}
+.nofx,.nofx *{transition:none!important}
+.shot .scr{transition:none!important}
+/* ?phone — just the device at (10,10), for shoot.sh and hero-stills.sh (&clear = transparent ground) */
+.phoneonly body{background:#141615}
+.phoneonly.clear body{background:transparent}
+.phoneonly body *{visibility:hidden}
+.phoneonly .phone,.phoneonly .phone *{visibility:visible}
+.phoneonly .phone{position:fixed;top:10px;left:10px;z-index:99;box-shadow:none;max-width:none;margin:0}
+
+/* SCREENS:START — styles for the app's screens. RULE: colours only via var(--b-*), or white/black
+   with alpha (scrims, shadows). RULE: no class name that the audit page above already uses
+   (.hero .btn .chip .list .idea .note .stat .band .num .hint .display .split …) — brand-check refuses collisions. */
+.k-pad{flex:1;display:flex;flex-direction:column;padding:58px 22px 26px;position:relative;z-index:1;min-height:0}
+.k-mark{width:34px;height:34px;margin-top:8px;display:block}
+.k-big{font:700 30px/1.17 var(--b-font);letter-spacing:-.01em;margin:16px 0 0}
+.k-big em{font-style:normal;color:var(--b-blue)}
+.k-sub{font:400 14px/1.45 var(--b-font);color:var(--b-ink2);margin:10px 0 0}
+.k-robot{width:290px;align-self:center;margin:auto 0 18px;display:block;-webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent),linear-gradient(180deg,transparent,#000 8%,#000 90%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent),linear-gradient(180deg,transparent,#000 8%,#000 90%,transparent);mask-composite:intersect}
+.k-btn{display:block;width:100%;border:0;border-radius:var(--b-pill);background:var(--b-primary);color:var(--b-primary-ink);font:700 15px var(--b-font);padding:14px 12px;cursor:pointer;text-align:center}
+.k-btn small{display:block;font:400 12px var(--b-font);margin-top:1px}
+.k-white{background:#ffffff;color:var(--b-primary-ink);margin-top:10px}
+.k-line{height:3px;background:#ffffff;border-radius:2px;overflow:hidden;margin-top:4px}
+.k-line i{display:block;height:100%;background:var(--b-primary)}
+.k-top{display:flex;align-items:center;justify-content:space-between;margin-top:16px;min-height:22px}
+.k-back{background:none;border:0;color:var(--b-ink);font:400 24px var(--b-font);padding:0;cursor:pointer;line-height:1}
+.k-step{font:700 12px var(--b-font);letter-spacing:.04em;color:var(--b-ink)}
+.k-skip{background:none;border:0;color:var(--b-ink);font:700 13px var(--b-font);cursor:pointer;padding:0}
+.k-h{font:700 21px/1.3 var(--b-font);margin:12px 0 0}
+.k-rows{display:flex;flex-direction:column;gap:8px;margin-top:22px}
+.k-row{display:flex;align-items:center;gap:10px;width:100%;background:var(--b-surface);border:2px solid transparent;border-radius:4px;padding:11px 12px;font:700 13.5px var(--b-font);color:var(--b-ink);text-align:left;cursor:pointer}
+.k-row.on{border-color:var(--b-primary)}
+.k-row svg{width:20px;height:20px;flex:none;fill:none;stroke:var(--b-ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.k-tag{margin-left:auto;background:var(--b-blue);color:#ffffff;font:700 10.5px var(--b-font);padding:3px 8px;border-radius:10px;white-space:nowrap}
+.k-fine{font:400 12.5px/1.4 var(--b-font);color:var(--b-ink2);margin:14px 0 0}
+.k-pre{font:700 12.5px var(--b-font);color:var(--b-primary);margin:10px 0 0}
+.k-foot{margin-top:auto;padding-top:14px}
+.k-btn:disabled{opacity:.45}
+/* title game */
+.k-card{margin:22px auto 0;width:232px;background:var(--b-surface);border-radius:8px;padding:16px 14px 10px;text-align:center}
+.k-card img{width:120px;display:block;margin:0 auto;box-shadow:0 8px 20px rgba(0,0,0,.35)}
+.k-ct{font:700 14.5px var(--b-font);margin-top:12px}
+.k-ca{font:400 12.5px var(--b-font);color:var(--b-ink2);margin-top:3px}
+.k-cd{font:400 12px/1.35 var(--b-font);color:var(--b-ink2);margin-top:6px}
+.k-cb{display:inline-flex;align-items:center;gap:4px;font:700 11px var(--b-font);margin-top:7px}
+.k-cb svg,.k-mt svg{width:12px;height:12px;fill:none;stroke:var(--b-ink);stroke-width:1.6}
+.k-cc{border-top:1px solid var(--b-line);margin-top:9px;padding-top:8px;font:400 12px var(--b-font)}
+.k-vote{display:flex;justify-content:center;gap:24px;margin-top:24px}
+.k-vote button{width:60px;height:60px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer}
+.k-vote svg{width:26px;height:26px;fill:var(--b-primary-ink)}
+.k-down{background:var(--b-ink2)}
+.k-up{background:var(--b-primary)}
+.k-cnt{text-align:center;font:400 12.5px var(--b-font);color:var(--b-ink2);margin-top:14px}
+/* loader */
+.k-ring{width:108px;height:108px;border-radius:50%;border:5px solid var(--b-primary);display:grid;place-items:center;font:700 25px var(--b-font);color:var(--b-blue);margin:26px auto 0}
+.k-chk{display:flex;gap:8px;font:400 13.5px/1.35 var(--b-font);margin-top:10px;align-items:flex-start}
+.k-chk::before{content:"✓";color:var(--b-blue);font-weight:700}
+.k-chk b{font-weight:700}
+.k-art{width:250px;margin:auto -22px -26px auto;display:block}
+/* first listen */
+.k-stage{position:relative;height:236px;margin-top:16px;border-radius:10px;background:var(--b-surface);overflow:hidden}
+.k-arc{position:absolute;left:50%;top:70px;width:300px;height:300px;margin-left:-150px;border-radius:50%;background:rgba(255,255,255,.88)}
+.k-stage img{position:absolute;left:50%;top:22px;width:128px;margin-left:-64px;box-shadow:0 10px 24px rgba(0,0,0,.35)}
+.k-mt{display:flex;align-items:center;gap:6px;margin-top:12px;font:700 11.5px var(--b-font)}
+.k-mt span+span{font-weight:400;color:var(--b-ink2)}
+.k-bt{font:700 20px/1.2 var(--b-font);margin-top:6px}
+.k-ba{font:400 13.5px var(--b-font);color:var(--b-ink2);margin-top:3px}
+.k-player{display:flex;align-items:center;gap:12px;margin-top:14px;background:var(--b-surface);border-radius:8px;padding:10px 12px}
+.k-play{width:44px;height:44px;flex:none;border-radius:50%;background:#ffffff;border:0;display:grid;place-items:center;cursor:pointer}
+.k-play svg{width:18px;height:18px;fill:var(--b-primary-ink)}
+.k-trk{flex:1;min-width:0}
+.k-trk small{display:block;font:700 11.5px var(--b-font);color:var(--b-ink)}
+.k-bar{height:4px;border-radius:2px;background:var(--b-line);margin-top:7px;overflow:hidden}
+.k-bar i{display:block;height:100%;width:0;background:var(--b-primary);transition:width .4s}
+.k-times{display:flex;justify-content:space-between;font:400 11px var(--b-font);color:var(--b-ink2);margin-top:4px}
+/* paywall */
+.s-x{position:absolute;top:56px;right:18px;background:none;border:0;color:var(--b-ink);font:400 21px var(--b-font);cursor:pointer;z-index:3;padding:4px}
+.k-pwh{font:700 21px/1.28 var(--b-font);margin:34px 30px 0 0}
+.k-pwh.k-today{font-size:20px;margin-top:40px}
+.k-proof{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px;border:1px solid var(--b-line);border-radius:8px;padding:8px 12px}
+.k-stars{color:var(--b-star);font-size:12px;letter-spacing:1px;display:block}
+.k-proof small{display:block;font:700 12px var(--b-font);color:var(--b-ink);margin-top:1px}
+.k-aotd{display:flex;align-items:center;gap:6px;font:700 11.5px/1.15 var(--b-font);text-align:left}
+.k-aotd img{height:30px;display:block}
+.k-lab{font:700 13px var(--b-font);color:var(--b-ink2);margin:16px 0 0}
+.k-tl{position:relative;margin-top:12px;padding-left:32px}
+.k-tl::before{content:"";position:absolute;left:4px;top:0;bottom:6px;width:16px;border-radius:8px;background:var(--b-grad)}
+.k-st{position:relative;margin-bottom:12px}
+.k-st b{display:block;font:700 15px var(--b-font)}
+.k-st p{font:400 13px/1.35 var(--b-font);color:var(--b-ink2);margin:2px 0 0}
+.k-st svg{position:absolute;left:-26px;top:2px;width:12px;height:12px;fill:#ffffff}
+.k-price{text-align:center;font:400 14px/1.45 var(--b-font);margin:6px 0 0}
+.k-price b{font-weight:700}
+.k-link{display:block;margin:6px auto 0;background:none;border:0;color:var(--b-primary);font:700 13px var(--b-font);cursor:pointer;padding:0}
+.k-wave{margin:14px -22px 0;padding:18px 22px 16px;background:var(--b-panel);border-radius:60% 40% 0 0 / 18px 22px 0 0;flex:1;display:flex;flex-direction:column}
+.k-wave h4{font:700 13.5px var(--b-font);margin:0}
+.k-wave p{font:400 13px/1.45 var(--b-font);color:var(--b-ink);margin:4px 0 0}
+.k-wave .k-btn{margin-top:0}
+.k-today+.k-tl~.k-wave .k-btn,.k-wave h4~.k-btn{margin-top:auto}
+.k-quote{font:400 13px/1.45 var(--b-font);margin:0}
+.k-quote b{display:block;font:700 12px var(--b-font);color:var(--b-ink2);margin-top:4px}
+.k-cancel{display:block;text-align:center;font:400 12px var(--b-font);color:var(--b-ink2);margin:auto 0 10px;padding-top:10px}
+/* offer */
+.k-kick{font:700 12px var(--b-font);letter-spacing:.06em;text-transform:uppercase;color:var(--b-primary);margin:22px 0 0}
+.k-offcard{margin-top:18px;background:var(--b-surface);border:2px solid var(--b-primary);border-radius:10px;padding:16px;text-align:center}
+.k-offcard b{display:block;font:700 13px var(--b-font);color:var(--b-ink2)}
+.k-offcard strong{display:block;font:700 34px var(--b-font);margin-top:4px;white-space:nowrap}
+.k-offcard span{display:block;font:400 13px var(--b-font);color:var(--b-ink2);margin-top:2px}
+.k-ticks{list-style:none;margin:16px 0 0;padding:0}
+.k-ticks li{display:flex;gap:8px;font:400 13.5px/1.4 var(--b-font);margin-top:8px}
+.k-ticks li::before{content:"✓";color:var(--b-primary);font-weight:700}
+.k-no{display:block;width:100%;background:none;border:0;color:var(--b-ink);font:700 13px var(--b-font);margin-top:14px;cursor:pointer}
+/* trial started */
+.k-modal{margin:auto 0;background:var(--b-bg2);border-radius:12px;overflow:hidden;text-align:center}
+.k-modal img{width:100%;display:block;background:var(--b-surface)}
+.k-mb{padding:18px 18px 18px}
+.k-mb h2{font:700 22px/1.25 var(--b-font);margin:0}
+.k-mb p{font:400 13.5px/1.45 var(--b-font);color:var(--b-ink);margin:8px 0 0}
+.k-rem{display:flex;align-items:center;gap:10px;text-align:left;background:var(--b-surface);border-radius:8px;padding:10px 12px;margin:14px 0 14px;font:400 13px/1.35 var(--b-font)}
+.k-rem svg{width:20px;height:20px;flex:none;fill:var(--b-primary)}
+.k-rem b{font-weight:700;display:block}
+.k-alert{position:absolute;inset:0;z-index:5;background:rgba(0,0,0,.42);display:grid;place-items:center}
+.k-ios{width:270px;border-radius:14px;background:rgba(255,255,255,.96);color:#000000;text-align:center;overflow:hidden;font-family:var(--b-font)}
+.k-ios h5{font:700 16px/1.3 var(--b-font);margin:18px 16px 0}
+.k-ios p{font:400 13px/1.35 var(--b-font);margin:4px 16px 16px;color:#000000}
+.k-ios div{display:flex;border-top:1px solid rgba(0,0,0,.18)}
+.k-ios button{flex:1;background:none;border:0;padding:12px 0;font:400 16px var(--b-font);color:var(--b-blue);cursor:pointer}
+.k-ios button+button{border-left:1px solid rgba(0,0,0,.18);font-weight:700}
+.k-lib{display:flex;align-items:center;gap:10px;margin-top:14px;font:400 12.5px/1.35 var(--b-font);color:var(--b-ink2)}
+.k-lib img{width:26px;display:block;border-radius:2px}
+.k-lib img+img{margin-left:-14px}
+/* SCREENS:END */
+</style>
+</head>
+<body>
+
+<nav class="au-nav" aria-label="Sections">
+  <div class="au-nav-in">
+    <div class="au-brand">
+      <img src="assets/brand/appstore-icon.jpg" alt="">
+      <span>Growth Audit <small>· Blinkist</small></span>
+    </div>
+    <a class="au-opt" href="#why">Why this</a>
+    <a href="#ideas">Five ideas</a>
+    <a href="#prototype">Prototype</a>
+    <a class="au-opt" href="#compare" id="navCompare" hidden>Paywall</a>
+  </div>
+</nav>
+
+<header class="au-top-hero" id="top">
+  <div class="au-wrap">
+    <p class="au-eyebrow"><i></i>Growth Audit · October 2026</p>
+    <h1 class="au-display">Blinkist</h1>
+    <p class="au-lede">Five ideas to turn more Blinkist readers into subscribers. <span>Each one built into your own onboarding, so you can tap through it.</span></p>
+    <p class="au-byline">Prepared by Adapty for the Blinkist team</p>
+    <div class="au-ctas">
+      <a class="au-btn" href="#ideas">See the five ideas</a>
+      <a class="au-lnk" href="#prototype">Open the prototype</a>
+      <button type="button" class="au-lnk au-play" id="heroVideo" hidden>Watch the 30-second walkthrough</button>
+    </div>
+  </div>
+  <!-- filled from CONTENT.hero: three screen ids → assets/hero/<id>.png (make them with hero-stills.sh) -->
+  <div class="au-phones" id="heroPhones" aria-label="Three screens from the prototype"></div>
+</header>
+
+<section class="au-sec au-white" id="why">
+  <div class="au-wrap">
+    <div class="au-split">
+      <div>
+        <p class="au-kicker">Why you’re seeing this</p>
+        <h2 class="au-h2">30,000 subscription apps taught us what moves conversion. <span>Here’s what we’d test first at Blinkist.</span></h2>
+      </div>
+      <div>
+        <p>Adapty runs subscriptions for <b>more than 30,000 apps</b>, so we see which onboarding and paywall changes lift revenue across the whole market, not just inside one app.</p>
+        <p>We pointed that at Blinkist. We took <b>your own screens, copy and prices</b> from a recorded run of your iOS onboarding and your App Store listing, and rebuilt the path from install to paywall around the five ideas with the most potential.</p>
+      </div>
+    </div>
+    <div class="au-stats">
+      <div class="au-stat"><b>30,000+</b><span>apps run their subscriptions on Adapty</span></div>
+      <div class="au-stat"><b>5</b><span>ideas, each built as a working screen</span></div>
+      <div class="au-stat"><b>0</b><span>changes to your art direction</span></div>
+    </div>
+    <div class="au-notes">
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg></div>
+        <h3>Five ideas, not fifteen</h3>
+        <p>We’re not proposing to rebuild every screen. These are the changes with the highest potential, ranked by what we’d test first.</p>
+      </div>
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M3.5 12h17"/></svg></div>
+        <h3>Your design, not ours</h3>
+        <p>Every colour, control and price in the prototype is Blinkist’s. We changed the order and what gets shown.</p>
+      </div>
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5v-13A1.5 1.5 0 0 1 5.5 4H15"/></svg></div>
+        <h3>We hope you haven’t tried these yet</h3>
+        <p>We work from the outside, so we can’t see your test history or your ad set-up. If you’ve already run one of these, tell us and we’ll go deeper on the rest.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="au-sec" id="ideas">
+  <div class="au-wrap">
+    <div class="au-ideas-h">
+      <p class="au-kicker">The shortlist</p>
+      <h2 class="au-h2">Five ideas. <span>Ranked by what we’d test first.</span></h2>
+    </div>
+    <div class="au-list" id="ideaList"></div>
+    <div class="au-band">
+      <div>
+        <p class="au-k">Potential outcome, based on Adapty data</p>
+        <h3>Together they work on three moments: why someone came, what they hear before they pay, and what happens when they say “not a year”.</h3>
+        <p class="au-fn" id="bandFn"></p>
+        <a class="au-btn" href="#prototype">Tap through the prototype</a>
+      </div>
+      <div class="au-nums" id="bandNums"></div>
+    </div>
+  </div>
+</section>
+
+<section class="au-sec au-white" id="prototype">
+  <div class="au-wrap">
+    <div class="au-proto-h">
+      <p class="au-kicker">The prototype</p>
+      <h2 class="au-h2">Every idea, inside your own onboarding.</h2>
+      <p>Tap through it like a new user, or jump straight to an idea. Green numbers mark the screens that carry one.</p>
+    </div>
+    <div class="au-langrow" id="langRow" hidden><span>Prototype language</span><div class="au-lsw" id="langSw" role="group" aria-label="Prototype language"></div></div>
+    <div class="au-seg" id="chips" role="tablist" aria-label="Screens"></div>
+    <div class="au-stage">
+      <div class="phone"><div class="phone-in">
+        <div class="island"></div>
+        <div class="sbar"><span>9:41</span><span>●●● ▮</span></div>
+
+<!-- SCREENS:START — one section.scr[data-id=ID] per screen, in flow order. Only the screens an idea lands on,
+     plus the context needed to read the flow (~8–10). Wiring: data-go="<id>" · data-back · data-pick="key:value"
+     (+ data-advance="<id>") · data-toggle="key:value" · data-bind="key" / "label:key" / "count:key" ·
+     data-requires="key" · data-show="key:value" · data-input="key" · class="scr sheet" slides up (offer paywall).
+     RULE: images only from assets/ (their app, their site, App Store) — never stock, never hotlinked.
+     Extras: data-t="key" = translatable (markup is CONTENT.langs[0]; other languages in CONTENT.i18n) — keep data-t on
+     leaf-ish elements, never on an element that also carries data-bind/data-pick/data-show;
+     data-langtoggle cycles the language (their own language pill); data-aside keeps a screen out of the flow
+     (the paywall TODAY, rendered only for the side-by-side still). -->
+
+<section class="scr" data-id="welcome">
+  <div class="s-pad k-pad">
+    <img class="k-mark" src="assets/brand/logo-8.svg" alt="Blinkist">
+    <h1 class="k-big"><span data-t="w_h1">Understand powerful ideas in</span> <em data-t="w_h2">15 mins</em></h1>
+    <p class="k-sub" data-t="w_s">Key insights from nonfiction bestsellers and podcasts, curated just for you.</p>
+    <img class="k-robot" src="assets/crop/robot.png" alt="">
+    <button class="k-btn" data-go="goal"><span data-t="w_cta">Get started</span></button>
+    <button class="k-btn k-white"><span data-t="w_login">Login</span></button>
+  </div>
+</section>
+
+<section class="scr" data-id="goal">
+  <div class="s-pad k-pad">
+    <div class="k-line"><i style="width:33%"></i></div>
+    <div class="k-top"><span class="k-step" data-t="g_step">STEP 1 OF 3</span></div>
+    <h1 class="k-h" data-t="g_h">What brings you to Blinkist?</h1>
+    <p class="k-sub" data-t="g_s">Your answer picks your first title.</p>
+    <div class="k-rows">
+      <button class="k-row" data-pick="goal:career" data-advance="topics">
+        <svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 12h18"/></svg>
+        <span data-t="g_career">Get ahead at work</span>
+        <span class="k-tag" data-show="ad:career"><span data-t="g_ad">From your ad</span></span>
+      </button>
+      <button class="k-row" data-pick="goal:money" data-advance="topics">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 8.5c-.6-.9-1.7-1.5-3-1.5-1.9 0-3 1-3 2.3 0 3.2 6 1.7 6 5 0 1.3-1.2 2.4-3 2.4-1.4 0-2.6-.7-3.1-1.7M12 5v2M12 17v2"/></svg>
+        <span data-t="g_money">Make smarter money decisions</span>
+      </button>
+      <button class="k-row" data-pick="goal:habits" data-advance="topics">
+        <svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg>
+        <span data-t="g_habits">Build better habits</span>
+      </button>
+      <button class="k-row" data-pick="goal:mind" data-advance="topics">
+        <svg viewBox="0 0 24 24"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 1V5a2 2 0 0 0-3-1zM15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-6 1"/></svg>
+        <span data-t="g_mind">Understand how people think</span>
+      </button>
+    </div>
+    <p class="k-fine" data-t="g_fine">You can follow more topics on the next step.</p>
+  </div>
+</section>
+
+<section class="scr" data-id="topics">
+  <div class="s-pad k-pad">
+    <div class="k-line"><i style="width:66%"></i></div>
+    <div class="k-top"><button class="k-back" data-back aria-label="Back">‹</button><span class="k-step" data-t="t_step">STEP 2 OF 3</span><span style="width:14px"></span></div>
+    <h1 class="k-h" data-t="t_h">What would you like to know more about?</h1>
+    <p class="k-pre" data-t="t_pre">Ticked from your answer. Add as many as you like.</p>
+    <div class="k-rows">
+      <button class="k-row" data-toggle="topics:sci"><span data-t="t_sci">Science &amp; Technology</span></button>
+      <button class="k-row" data-toggle="topics:health"><span data-t="t_health">Health &amp; Meditation</span></button>
+      <button class="k-row" data-toggle="topics:career"><span data-t="t_career">Career &amp; Business</span></button>
+      <button class="k-row" data-toggle="topics:culture"><span data-t="t_culture">Culture &amp; Humankind</span></button>
+      <button class="k-row" data-toggle="topics:family"><span data-t="t_family">Relationships &amp; Family</span></button>
+      <button class="k-row" data-toggle="topics:growth"><span data-t="t_growth">Inspiration &amp; Personal Growth</span></button>
+      <button class="k-row" data-toggle="topics:money"><span data-t="t_money">Money &amp; Economics</span></button>
+    </div>
+    <div class="k-foot"><button class="k-btn" data-go="titles" data-requires="topics"><span data-t="t_cta">Next</span></button></div>
+  </div>
+</section>
+
+<section class="scr" data-id="titles">
+  <div class="s-pad k-pad">
+    <div class="k-line"><i style="width:100%"></i></div>
+    <div class="k-top"><span class="k-step" data-t="v_step">STEP 3 OF 3</span><button class="k-skip" data-go="loader"><span data-t="v_skip">Skip</span></button></div>
+    <h1 class="k-h" data-t="v_h">Does this title interest you?</h1>
+    <p class="k-sub" data-t="v_s">Titles you like will be saved to your library to enjoy later.</p>
+    <div class="k-card" data-show="card:0">
+      <img src="assets/crop/cover-nsd.png" alt="">
+      <div class="k-ct">Never Split the Difference</div>
+      <div class="k-ca">Chris Voss, Tahl Raz</div>
+      <div class="k-cd" data-t="v_d1">Negotiating as if your life depended on it</div>
+      <div class="k-cb"><svg viewBox="0 0 12 12"><path d="M1.5 2.5h3.5a1 1 0 0 1 1 1v7a1 1 0 0 0-1-1H1.5zM10.5 2.5H7a1 1 0 0 0-1 1v7a1 1 0 0 1 1-1h3.5z"/></svg>Blinks</div>
+      <div class="k-cc" data-t="v_c1">Communication Skills</div>
+    </div>
+    <div class="k-card" data-show="card:1">
+      <img src="assets/crop/cover-zero.png" alt="">
+      <div class="k-ct">Zero to One</div>
+      <div class="k-ca">Peter Thiel, Blake Masters</div>
+      <div class="k-cd" data-t="v_d2">Notes on startups, or how to build the future</div>
+      <div class="k-cb"><svg viewBox="0 0 12 12"><path d="M1.5 2.5h3.5a1 1 0 0 1 1 1v7a1 1 0 0 0-1-1H1.5zM10.5 2.5H7a1 1 0 0 0-1 1v7a1 1 0 0 1 1-1h3.5z"/></svg>Blinks</div>
+      <div class="k-cc" data-t="v_c2">Entrepreneurship</div>
+    </div>
+    <div class="k-vote">
+      <button class="k-down" data-vote="down" aria-label="Not for me"><svg viewBox="0 0 24 24" style="transform:rotate(180deg)"><path d="M2 10h4v11H2zM8 21V10l5-8c1.6 0 2.6 1.2 2.3 2.8L14.5 9H21a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 19.6 21z"/></svg></button>
+      <button class="k-up" data-vote="up" aria-label="I like it"><svg viewBox="0 0 24 24"><path d="M2 10h4v11H2zM8 21V10l5-8c1.6 0 2.6 1.2 2.3 2.8L14.5 9H21a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 19.6 21z"/></svg></button>
+    </div>
+  </div>
+</section>
+
+<section class="scr" data-id="loader">
+  <div class="s-pad k-pad" data-go="listen" style="cursor:pointer">
+    <div class="k-ring">100%</div>
+    <h1 class="k-h" style="margin-top:30px" data-t="l_h">Just a moment while we personalize your experience</h1>
+    <div class="k-chk"><span data-t="l_1">Creating your For You screen</span></div>
+    <div class="k-chk"><span data-t="l_2">Adding selected titles to your library</span></div>
+    <div class="k-chk k-chk3"><span><span data-t="l_3">Picking your first title:</span> <b data-book></b></span></div>
+    <img class="k-art" src="assets/crop/loader-art.png" alt="">
+  </div>
+</section>
+
+<section class="scr" data-id="listen">
+  <div class="s-pad k-pad">
+    <h1 class="k-h" style="margin-top:14px" data-t="p_h">Start your first title</h1>
+    <p class="k-sub"><span data-t="p_s">Picked for</span> “<span data-bind="label:goal"></span>”. <span data-t="p_s2">Listen to the first 2 minutes, free, before you decide.</span></p>
+    <div class="k-stage"><div class="k-arc"></div>
+      <img data-show="goal:career" src="assets/crop/cover-why.png" alt="">
+      <img data-show="goal:money" src="assets/crop/cover-money.png" alt="">
+      <img data-show="goal:habits" src="assets/crop/cover-habits.png" alt="">
+      <img data-show="goal:mind" src="assets/crop/cover-thinking.png" alt="">
+    </div>
+    <div class="k-mt"><svg viewBox="0 0 12 12"><path d="M1.5 2.5h3.5a1 1 0 0 1 1 1v7a1 1 0 0 0-1-1H1.5zM10.5 2.5H7a1 1 0 0 0-1 1v7a1 1 0 0 1 1-1h3.5z"/></svg><span>Blinks</span><span data-bookmin></span></div>
+    <div class="k-bt" data-book></div>
+    <div class="k-ba" data-bookby></div>
+    <div class="k-player">
+      <button class="k-play" data-pick="play:on" data-show="play:off" aria-label="Play"><svg viewBox="0 0 20 20"><path d="M6 3.5l11 6.5-11 6.5z"/></svg></button>
+      <button class="k-play" data-pick="play:off" data-show="play:on" aria-label="Pause"><svg viewBox="0 0 20 20"><rect x="5" y="3.5" width="3.2" height="13" rx="1"/><rect x="11.8" y="3.5" width="3.2" height="13" rx="1"/></svg></button>
+      <div class="k-trk"><small data-t="p_prev">Free preview · Introduction</small><div class="k-bar"><i></i></div><div class="k-times"><span class="k-t0">0:00</span><span>2:00</span></div></div>
+    </div>
+    <div class="k-lib"><span style="display:flex"><img src="assets/crop/cover-nsd.png" alt=""><img src="assets/crop/cover-zero.png" alt=""></span><span data-t="p_lib">Your 2 thumbs-up titles are waiting in My Library.</span></div>
+    <div class="k-foot"><button class="k-btn" data-go="paywall"><span data-t="p_cta">Continue</span></button></div>
+  </div>
+</section>
+
+<section class="scr" data-id="paywall">
+  <button class="s-x" data-go="offer" aria-label="Close">✕</button>
+  <div class="s-pad k-pad" style="padding-bottom:0">
+    <h1 class="k-pwh"><span data-t="pw_h">Your 7 free days start with</span> <span data-book></span></h1>
+    <div class="k-proof k-proofrow">
+      <div><span class="k-stars">★★★★★</span><small data-t="pw_rate">4.8 · 158K ratings</small></div>
+      <div class="k-aotd"><img src="assets/crop/laurel.png" alt=""><span data-t="pw_aotd">App of the Day<br>App Store</span></div>
+    </div>
+    <p class="k-lab" data-t="pw_how">How your free trial works</p>
+    <div class="k-tl">
+      <div class="k-st"><svg viewBox="0 0 12 12"><path d="M3 5V3.5a3 3 0 0 1 6 0V5h.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-5a.5.5 0 0 1 .5-.5zm1.5 0h3V3.5a1.5 1.5 0 0 0-3 0z"/></svg><b data-t="pw_t1">Today</b><p data-t="pw_t1s">Get instant access and see how it can change your life.</p></div>
+      <div class="k-st"><svg viewBox="0 0 12 12"><path d="M6 1a3.5 3.5 0 0 1 3.5 3.5V7l1 1.5v.5h-9v-.5l1-1.5V4.5A3.5 3.5 0 0 1 6 1zm-1.3 9h2.6a1.3 1.3 0 0 1-2.6 0z"/></svg><b data-t="pw_t2">Day 5</b><p data-t="pw_t2s">We'll remind you with an email or notification that your trial is ending.</p></div>
+      <div class="k-st" style="margin-bottom:0"><svg viewBox="0 0 12 12"><path d="M6 .8l1.6 3.3 3.6.5-2.6 2.5.6 3.6L6 9l-3.2 1.7.6-3.6L.8 4.6l3.6-.5z"/></svg><b data-t="pw_t3">Day 7</b><p><span data-t="pw_t3a">You'll be charged on</span> <span class="k-d7"></span><span data-t="pw_t3b">, cancel anytime before.</span></p></div>
+    </div>
+    <p class="k-price" data-t="pw_price">Unlimited free access for 7 days, then <b>$79.99 per year</b> ($6.67/month).</p>
+    <button class="k-link"><span data-t="pw_all">View all plans</span></button>
+    <div class="k-wave">
+      <p class="k-quote"><span data-t="pw_q">“Life changing. The concept of being able to grasp a book's main point in such a short time truly opens multiple opportunities to grow.”</span><b>Jonathan A.</b></p>
+      <span class="k-cancel" data-t="pw_cancel">How can I cancel? It's easy, in Settings › Cancel free trial.</span>
+      <button class="k-btn" data-pick="plan:year" data-advance="started"><span data-t="pw_cta">Start my free trial now</span><small data-t="pw_cta2">2 taps to start, super easy to cancel</small></button>
+      <div style="height:22px"></div>
+    </div>
+  </div>
+</section>
+
+<section class="scr sheet" data-id="offer">
+  <button class="s-x" data-go="paywall" aria-label="Close">✕</button>
+  <div class="s-pad k-pad">
+    <img class="k-mark" src="assets/brand/logo-8.svg" alt="">
+    <p class="k-kick" data-t="o_k">Before you go</p>
+    <h1 class="k-h" style="font-size:24px" data-t="o_h">Not ready for a whole year? Go month by month.</h1>
+    <div class="k-offcard">
+      <b data-t="o_p">Blinkist Premium · 1 month</b>
+      <strong data-t="o_price">$12.99</strong>
+      <span data-t="o_sub">a month, no yearly commitment</span>
+    </div>
+    <ul class="k-ticks">
+      <li data-t="o_b1">All 9,000+ titles, in audio and text</li>
+      <li data-t="o_b2">Cancel anytime in your App Store settings</li>
+      <li data-t="o_b3">Shown once, right now. No timer, no catch.</li>
+    </ul>
+    <div class="k-foot">
+      <button class="k-btn" data-pick="plan:month" data-advance="started"><span data-t="o_cta">Start monthly for $12.99</span></button>
+      <button class="k-no" data-back><span data-t="o_no">No thanks, keep the free Blink of the Day</span></button>
+    </div>
+  </div>
+</section>
+
+<section class="scr" data-id="started">
+  <div class="s-pad k-pad">
+    <div class="k-modal">
+      <img src="assets/crop/welcome-banner.png" alt="">
+      <div class="k-mb">
+        <h2 data-show="plan:year"><span data-t="s_h">Your 7-day trial has started!</span></h2>
+        <h2 data-show="plan:month"><span data-t="s_hm">Welcome to Blinkist Premium!</span></h2>
+        <p data-show="plan:year"><span data-t="s_s">We'll remind you that your trial is ending with a push notification.</span></p>
+        <p data-show="plan:month"><span data-t="s_sm">Turn on notifications and we'll send you a new pick every day.</span></p>
+        <div class="k-rem">
+          <svg viewBox="0 0 12 12"><path d="M6 1a3.5 3.5 0 0 1 3.5 3.5V7l1 1.5v.5h-9v-.5l1-1.5V4.5A3.5 3.5 0 0 1 6 1zm-1.3 9h2.6a1.3 1.3 0 0 1-2.6 0z"/></svg>
+          <span data-show="notif:off"><b data-t="s_r1">Your Day 5 reminder</b><span data-t="s_r2">One notification on</span> <span class="k-d5"></span></span>
+          <span data-show="notif:ask"><b data-t="s_r1b">Your Day 5 reminder</b><span data-t="s_r2b">One notification on</span> <span class="k-d5"></span></span>
+          <span data-show="notif:on"><b data-t="s_r3">Reminder is on</b><span data-t="s_r4">We'll tell you on</span> <span class="k-d5"></span></span>
+        </div>
+        <button class="k-btn" data-pick="notif:ask" data-show="notif:off"><span data-t="s_cta">Turn on my reminder</span></button>
+        <button class="k-btn" data-pick="notif:ask" data-show="notif:ask"><span data-t="s_ctab">Turn on my reminder</span></button>
+        <button class="k-btn" data-show="notif:on"><span data-t="s_go">Let's go</span></button>
+        <button class="k-no" data-show="notif:off" data-pick="notif:on" style="font-weight:400"><span data-t="s_not">Not now</span></button>
+      </div>
+    </div>
+  </div>
+  <div class="k-alert" data-show="notif:ask">
+    <div class="k-ios">
+      <h5 data-t="s_ios">“Blinkist” Would Like to Send You Notifications</h5>
+      <p data-t="s_ios2">Notifications may include alerts, sounds, and icon badges. These can be configured in Settings.</p>
+      <div><button data-pick="notif:off"><span data-t="s_no">Don’t Allow</span></button><button data-pick="notif:on" class="k-allow"><span data-t="s_yes">Allow</span></button></div>
+    </div>
+  </div>
+</section>
+
+<section class="scr" data-id="today" data-aside>
+  <button class="s-x" aria-label="Close">✕</button>
+  <div class="s-pad k-pad" style="padding-bottom:0">
+    <h1 class="k-pwh k-today" data-t="td_h">How your free trial works</h1>
+    <div class="k-tl" style="margin-top:22px">
+      <div class="k-st"><svg viewBox="0 0 12 12"><path d="M3 5V3.5a3 3 0 0 1 6 0V5h.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-5a.5.5 0 0 1 .5-.5zm1.5 0h3V3.5a1.5 1.5 0 0 0-3 0z"/></svg><b data-t="td_t1">Today</b><p data-t="td_t1s">Get instant access and see how it can change your life.</p></div>
+      <div class="k-st"><svg viewBox="0 0 12 12"><path d="M6 1a3.5 3.5 0 0 1 3.5 3.5V7l1 1.5v.5h-9v-.5l1-1.5V4.5A3.5 3.5 0 0 1 6 1zm-1.3 9h2.6a1.3 1.3 0 0 1-2.6 0z"/></svg><b data-t="td_t2">Day 5</b><p data-t="td_t2s">We'll remind you with an email or notification that your trial is ending.</p></div>
+      <div class="k-st" style="margin-bottom:0"><svg viewBox="0 0 12 12"><path d="M6 .8l1.6 3.3 3.6.5-2.6 2.5.6 3.6L6 9l-3.2 1.7.6-3.6L.8 4.6l3.6-.5z"/></svg><b data-t="td_t3">Day 7</b><p><span data-t="td_t3a">You'll be charged on</span> <span class="k-d7"></span><span data-t="td_t3b">, cancel anytime before.</span></p></div>
+    </div>
+    <p class="k-price" style="margin-top:22px" data-t="td_price">Unlimited free access for 7 days, then <b>$79.99 per year</b> ($6.67/month).</p>
+    <button class="k-link"><span data-t="td_all">View all plans</span></button>
+    <div class="k-wave" style="margin-top:26px">
+      <h4 data-t="td_ch">How can I cancel?</h4>
+      <p data-t="td_cs">It's easy: Open the Blinkist app, tap Settings at the top right and then "Cancel free trial". You're in your App Store subscriptions. Select Blinkist, "Cancel Trial" and confirm.</p>
+      <button class="k-btn"><span data-t="td_cta">Start my free trial now</span><small data-t="td_cta2">2 taps to start, super easy to cancel</small></button>
+      <div style="height:22px"></div>
+    </div>
+  </div>
+</section>
+<!-- SCREENS:END -->
+
+      </div></div>
+      <div class="au-pn" id="panel" aria-live="polite"></div>
+    </div>
+    <p class="au-hint">Close the paywall with ✕ to see idea 5. Start the trial to see idea 3.</p>
+    <!-- shown when CONTENT.liveUrl is set: assets/qr-app.png = qr.swift "<liveUrl>?app" -->
+    <div class="au-qr" id="qrCard" hidden><img src="assets/qr-app.png" alt="QR code that opens the prototype full screen"><div><b>Try it on your phone</b><p>Scan to open the prototype full screen, the way a new user would see it.</p></div></div>
+    <div class="au-mobw" id="qrMob" hidden><a class="au-btn" href="?app">Open it full screen</a></div>
+  </div>
+</section>
+
+<!-- the paywall TODAY vs PROPOSED — built from CONTENT.compare (stills: assets/hero/<today>.png, <proposed>.png) -->
+<section class="au-sec" id="compare" hidden><div class="au-wrap" id="cmpBody"></div></section>
+
+<footer class="au-foot" id="sources">
+  <div class="au-wrap">
+    <details id="srcDetails">
+      <summary>Where the numbers come from</summary>
+      <div class="au-srcs" id="srcBody"></div>
+    </details>
+    <p class="au-fine" id="fine"></p>
+    <div class="au-cta-line">
+      <p>Every screen here can be built and A/B tested in Adapty’s Flow Builder, with no app release.</p>
+      <a class="au-btn" href="https://adapty.io/flow-paywall-builder/" target="_blank" rel="noopener">About Flow Builder</a>
+    </div>
+  </div>
+</footer>
+
+<!-- extras: video dialog (CONTENT.video), ?app bar, ?tour overlay (CONTENT.tour) -->
+<dialog class="au-vid" id="vid" aria-label="Walkthrough video">
+  <div class="au-vid-in"><video id="vidEl" controls muted playsinline preload="none"></video></div>
+  <div class="au-vid-bar"><a id="vidDl" download>Download the MP4</a><button type="button" class="au-vid-x" id="vidX">Close</button></div>
+</dialog>
+<div class="au-scrim" id="abScrim"></div>
+<div class="au-appbar" id="appbar">
+  <button type="button" class="au-ab-why" id="abWhy"><i></i><span id="abT"></span><em>Why ↑</em></button>
+  <div class="au-lsw" id="abLang" role="group" aria-label="Language"></div>
+</div>
+<div class="au-tour" aria-hidden="true">
+  <div class="au-tb"><img src="assets/brand/appstore-icon.jpg" alt="">Growth Audit <small>· Blinkist</small></div>
+  <div class="au-tby">Prepared by Adapty</div>
+  <div class="au-tcap" id="tCap"></div>
+  <div class="au-ttap" id="tTap"></div>
+  <div class="au-tprog"><i id="tProg"></i></div>
+  <div class="au-tintro" id="tIntro"></div>
+  <div class="au-tend" id="tEnd"></div>
+</div>
+
+<!-- CONTENT — all the audit's words and numbers, as data. Schema (brand-check enforces it):
+     ideas  : 3–5 rows, ranked (the audit is five ideas, never fifteen). screen = the screen that shows it.
+     panel  : one entry per screen. idea = its number in ideas (1-based) or 0 for a context screen.
+              why on an idea screen reads "<b>Try</b> X, <b>because</b> Y." in ≤ 45 words; iv = its range.
+              why on a context screen is one line saying what it sets up.
+     hero   : three screen ids shown as stills in the hero — run hero-stills.sh after the screens are done.
+     outcome: combined "up to" numbers, PS-deck style, never above the ceiling of the per-idea ranges.
+     sources: public facts only — App Store, their site, their screens. No sales research on this page.
+     EXTRAS (each one hides itself when left empty):
+     langs  : [{"code":"en","name":"English"},{"code":"es","name":"Español · Spain prices"}] — first = the markup's language
+     i18n   : {"es": {"<data-t key>": "text with {tokens}"}} — every data-t key, for every language after the first
+     prices : {"es": {"yr": "39,99 €", …}} — {tokens} in i18n strings; that storefront's real IAP prices
+     labelsI18n: {"es": {"goal": {"a": "…"}}} — C.labels per language (data-bind="label:…")
+     liveUrl: final Pages URL (QR card + video end card); the QR file encodes liveUrl + "?app"
+     video / poster: "assets/walkthrough.mp4" / "assets/walkthrough-poster.jpg" (record-video.sh)
+     compare: {today, proposed, kicker, title, sub, todayCap, rows:[{h, idea, was, now}], kept} — today = a data-aside screen
+     tour   : {segments:[{id, d, st, tap:[selector-in-screen, ms], pop, reveal, end}], captions:{id:{n|k, t, l, o, ol}},
+              introLede, endTitle} — ~30 s total; the last segment has end:true (the end card) -->
+<script type="application/json" id="content">
+{
+ "app": "Blinkist",
+ "state": {
+  "ad": "career",
+  "goal": "career",
+  "topics": [
+   "career"
+  ],
+  "_g": "career",
+  "card": "0",
+  "play": "on",
+  "plan": "year",
+  "notif": "off"
+ },
+ "labels": {
+  "goal": {
+   "career": "Get ahead at work",
+   "money": "Make smarter money decisions",
+   "habits": "Build better habits",
+   "mind": "Understand how people think"
+  }
+ },
+ "chips": {
+  "welcome": "Welcome",
+  "goal": "Why they came",
+  "topics": "Topics",
+  "titles": "Title game",
+  "loader": "Loader",
+  "listen": "First listen",
+  "paywall": "Paywall",
+  "offer": "On close",
+  "started": "Reminder"
+ },
+ "hero": [
+  "listen",
+  "paywall",
+  "goal"
+ ],
+ "outcome": {
+  "cr": "+20%",
+  "arpu": "+15%"
+ },
+ "ideas": [
+  {
+   "screen": "goal",
+   "title": "Ask why they came, then say it back",
+   "what": "Your first question today is a topic list, and the paywall that follows says “How your free trial works” to everyone. Ask the reason first, pre-selected from the ad they tapped, and let it pick the title the paywall names: “Your 7 free days start with Start With Why”.",
+   "impact": "+10–20%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "paywall",
+   "title": "Put 4.8 stars and App of the Day on the paywall",
+   "what": "158K people rate Blinkist 4.8 on the App Store and Apple named it App of the Day, yet the trial screen carries no proof at all. Put the rating, the award and one member’s review above the button.",
+   "impact": "+10–15%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "started",
+   "title": "Ask for notifications after the trial starts",
+   "what": "Today iOS asks for notifications on the third welcome slide, before anyone has seen a title. Ask on “Your 7-day trial has started!” instead, as the Day 5 reminder your paywall already promises.",
+   "impact": "+10–15%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "listen",
+   "title": "Let them hear a title before the paywall",
+   "what": "The first Play button comes after the paywall and account creation today. Move “Start your first title” ahead of the paywall, with two free minutes of the title their answer picked (Start With Why, 24 min).",
+   "impact": "+5–15%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "offer",
+   "title": "Catch the people who close the paywall",
+   "what": "When someone taps ✕ on the $79.99 yearly trial, show your real monthly plan once: $12.99 a month, no yearly commitment, with the free Blink of the Day as the way out. No timer, no inflated price.",
+   "impact": "+10–15%",
+   "il": "ARPU"
+  }
+ ],
+ "panel": {
+  "welcome": {
+   "idea": 0,
+   "t": "Your welcome, kept",
+   "why": "Your first screen word for word, with the reader from your App Store art. The notification prompt behind it moves to the end (idea 3)."
+  },
+  "goal": {
+   "idea": 1,
+   "t": "Ask why they came, then say it back",
+   "why": "<b>Try</b> one question first, why they came, pre-selected from the ad they tapped, <b>because</b> a paid-social visitor arrives with one promise in mind, and today the first question is a topic list the paywall never mentions.",
+   "iv": "CR +10–20%",
+   "il": "to purchase",
+   "also": "The answer ticks the topics, picks the first title and writes the paywall headline."
+  },
+  "topics": {
+   "idea": 0,
+   "t": "Your topics, pre-ticked",
+   "why": "Your step 1, word for word, now step 2. The goal already ticks one topic, so most people just tap Next. Your category step folds in here."
+  },
+  "titles": {
+   "idea": 0,
+   "t": "Your title game, kept",
+   "why": "Your thumbs-up card game, the most original part of the flow. Two cards in the prototype; yours runs longer."
+  },
+  "loader": {
+   "idea": 0,
+   "t": "Your loader, naming what comes next",
+   "why": "Your three checks, with the third naming the title the next screen plays, so the wait promises something real."
+  },
+  "listen": {
+   "idea": 4,
+   "t": "Let them hear a title before the paywall",
+   "why": "<b>Try</b> moving “Start your first title” ahead of the paywall, with two free minutes of the title their answer picked, <b>because</b> today the first Play button comes after the paywall and account creation.",
+   "iv": "CR +5–15%",
+   "il": "to purchase",
+   "also": "It is your own post-paywall screen, moved forward: same card, same Play button."
+  },
+  "paywall": {
+   "idea": 2,
+   "t": "Put 4.8 stars and App of the Day on the paywall",
+   "why": "<b>Try</b> your rating, your App of the Day award and a member’s review on the trial screen, <b>because</b> 158K ratings at 4.8 are the strongest proof you have, and the screen where people decide shows none of it.",
+   "iv": "CR +10–15%",
+   "il": "to purchase",
+   "also": "Idea 1 is the headline: it names the title their answer picked. Your timeline, price line and button stay as they are."
+  },
+  "offer": {
+   "idea": 5,
+   "t": "Catch the people who close the paywall",
+   "why": "<b>Try</b> one calm second offer on ✕, your real monthly plan at $12.99 with no yearly commitment, <b>because</b> many people who close a yearly trial mean “not a year”, not “not Blinkist”.",
+   "iv": "ARPU +10–15%",
+   "il": "from people who close the paywall"
+  },
+  "started": {
+   "idea": 3,
+   "t": "Ask for notifications after the trial starts",
+   "why": "<b>Try</b> asking on “Your 7-day trial has started!”, framed as the Day 5 reminder your paywall promises, <b>because</b> today iOS asks on the third welcome slide, a system dialog that pulls attention while momentum is building.",
+   "iv": "CR +10–15%",
+   "il": "to purchase",
+   "also": "Tap “Turn on my reminder” to see the system prompt it replaces."
+  }
+ },
+ "langs": [
+  {
+   "code": "en",
+   "name": "English"
+  },
+  {
+   "code": "de",
+   "name": "Deutsch · German prices"
+  }
+ ],
+ "i18n": {
+  "de": {
+   "w_h1": "Verstehe große Ideen in",
+   "w_h2": "15 Minuten",
+   "w_s": "Die wichtigsten Erkenntnisse aus Sachbuch-Bestsellern und Podcasts, für dich ausgewählt.",
+   "w_cta": "Los geht’s",
+   "w_login": "Anmelden",
+   "g_step": "SCHRITT 1 VON 3",
+   "g_h": "Was führt dich zu Blinkist?",
+   "g_s": "Deine Antwort wählt deinen ersten Titel.",
+   "g_career": "Im Job vorankommen",
+   "g_ad": "Aus deiner Anzeige",
+   "g_money": "Klügere Geldentscheidungen",
+   "g_habits": "Bessere Gewohnheiten aufbauen",
+   "g_mind": "Verstehen, wie Menschen denken",
+   "g_fine": "Im nächsten Schritt kannst du weitere Themen wählen.",
+   "t_step": "SCHRITT 2 VON 3",
+   "t_h": "Worüber möchtest du mehr erfahren?",
+   "t_pre": "Aus deiner Antwort angehakt. Wähle so viele du magst.",
+   "t_sci": "Wissenschaft &amp; Technik",
+   "t_health": "Gesundheit &amp; Meditation",
+   "t_career": "Karriere &amp; Business",
+   "t_culture": "Kultur &amp; Menschheit",
+   "t_family": "Beziehungen &amp; Familie",
+   "t_growth": "Inspiration &amp; Persönlichkeit",
+   "t_money": "Geld &amp; Wirtschaft",
+   "t_cta": "Weiter",
+   "v_step": "SCHRITT 3 VON 3",
+   "v_skip": "Überspringen",
+   "v_h": "Interessiert dich dieser Titel?",
+   "v_s": "Titel, die dir gefallen, landen in deiner Bibliothek.",
+   "v_d1": "Verhandeln, als hinge Ihr Leben davon ab",
+   "v_c1": "Kommunikation",
+   "v_d2": "Notizen über Startups, oder wie man die Zukunft baut",
+   "v_c2": "Unternehmertum",
+   "l_h": "Einen Moment, wir personalisieren dein Erlebnis",
+   "l_1": "Dein Für-dich-Bereich wird erstellt",
+   "l_2": "Ausgewählte Titel kommen in deine Bibliothek",
+   "l_3": "Dein erster Titel:",
+   "p_h": "Starte deinen ersten Titel",
+   "p_s": "Ausgewählt für",
+   "p_s2": "Hör die ersten 2 Minuten gratis, bevor du dich entscheidest.",
+   "p_prev": "Gratis-Vorschau · Einleitung",
+   "p_cta": "Weiter",
+   "pw_h": "Deine 7 Gratistage starten mit",
+   "pw_rate": "4,7 · 113.000 Bewertungen",
+   "pw_aotd": "App des Tages<br>App Store",
+   "pw_how": "So funktioniert dein Gratis-Test",
+   "pw_t1": "Heute",
+   "pw_t1s": "Sofort vollen Zugang und sehen, wie es dein Leben verändern kann.",
+   "pw_t2": "Tag 5",
+   "pw_t2s": "Wir erinnern dich per E-Mail oder Mitteilung, dass dein Test endet.",
+   "pw_t3": "Tag 7",
+   "pw_t3a": "Die Abbuchung erfolgt am",
+   "pw_t3b": ", davor jederzeit kündbar.",
+   "pw_price": "7 Tage unbegrenzt gratis, danach <b>{yr} pro Jahr</b> ({pm}/Monat).",
+   "pw_all": "Alle Abos ansehen",
+   "pw_q": "„Lebensverändernd. In so kurzer Zeit den Kern eines Buches zu erfassen, eröffnet viele Möglichkeiten zu wachsen.“",
+   "pw_cancel": "Wie kündige ich? Ganz einfach: Einstellungen › Gratis-Test kündigen.",
+   "pw_cta": "Gratis-Test jetzt starten",
+   "pw_cta2": "2 Taps zum Start, super einfach kündbar",
+   "o_k": "Bevor du gehst",
+   "o_h": "Noch kein ganzes Jahr? Starte Monat für Monat.",
+   "o_p": "Blinkist Premium · 1 Monat",
+   "o_price": "{mo}",
+   "o_sub": "im Monat, ohne Jahresbindung",
+   "o_b1": "Alle 9.000+ Titel, als Audio und Text",
+   "o_b2": "Jederzeit in den App-Store-Einstellungen kündbar",
+   "o_b3": "Nur einmal, nur jetzt. Kein Timer, kein Haken.",
+   "o_cta": "Monatlich starten für {mo}",
+   "o_no": "Nein danke, ich bleibe beim kostenlosen Blink des Tages",
+   "s_h": "Dein 7-Tage-Test hat begonnen!",
+   "s_hm": "Willkommen bei Blinkist Premium!",
+   "s_s": "Wir erinnern dich per Push-Mitteilung, bevor dein Test endet.",
+   "s_sm": "Aktiviere Mitteilungen und wir schicken dir jeden Tag einen neuen Tipp.",
+   "s_r1": "Deine Erinnerung an Tag 5",
+   "s_r2": "Eine Mitteilung am",
+   "s_r1b": "Deine Erinnerung an Tag 5",
+   "s_r2b": "Eine Mitteilung am",
+   "s_r3": "Erinnerung ist an",
+   "s_r4": "Wir melden uns am",
+   "s_cta": "Erinnerung einschalten",
+   "s_ctab": "Erinnerung einschalten",
+   "s_go": "Los geht’s",
+   "s_not": "Jetzt nicht",
+   "s_ios": "„Blinkist“ möchte dir Mitteilungen senden",
+   "s_ios2": "Mitteilungen können Hinweise, Töne und Kennzeichensymbole enthalten. Diese können in den Einstellungen konfiguriert werden.",
+   "s_no": "Nicht erlauben",
+   "s_yes": "Erlauben",
+   "td_h": "So funktioniert dein Gratis-Test",
+   "td_t1": "Heute",
+   "td_t1s": "Sofort vollen Zugang und sehen, wie es dein Leben verändern kann.",
+   "td_t2": "Tag 5",
+   "td_t2s": "Wir erinnern dich per E-Mail oder Mitteilung, dass dein Test endet.",
+   "td_t3": "Tag 7",
+   "td_t3a": "Die Abbuchung erfolgt am",
+   "td_t3b": ", davor jederzeit kündbar.",
+   "td_price": "7 Tage unbegrenzt gratis, danach <b>{yr} pro Jahr</b> ({pm}/Monat).",
+   "td_all": "Alle Abos ansehen",
+   "td_ch": "Wie kann ich kündigen?",
+   "td_cs": "Ganz einfach: Öffne die Blinkist-App, tippe oben rechts auf Einstellungen und dann auf „Gratis-Test kündigen“. Du landest in deinen App-Store-Abos. Wähle Blinkist, „Test kündigen“ und bestätige.",
+   "td_cta": "Gratis-Test jetzt starten",
+   "td_cta2": "2 Taps zum Start, super einfach kündbar",
+   "p_lib": "Deine 2 Daumen-hoch-Titel warten in Meine Bibliothek."
+  }
+ },
+ "prices": {
+  "de": {
+   "yr": "79,99 €",
+   "pm": "6,67 €",
+   "mo": "12,99 €"
+  }
+ },
+ "labelsI18n": {
+  "de": {
+   "goal": {
+    "career": "Im Job vorankommen",
+    "money": "Klügere Geldentscheidungen",
+    "habits": "Bessere Gewohnheiten aufbauen",
+    "mind": "Verstehen, wie Menschen denken"
+   }
+  }
+ },
+ "liveUrl": "https://eddieatadapty.github.io/blinkist-flow-rebuild/",
+ "video": "assets/walkthrough.mp4",
+ "poster": "assets/walkthrough-poster.jpg",
+ "compare": {
+  "today": "today",
+  "proposed": "paywall",
+  "kicker": "The paywall, side by side",
+  "title": "Today and proposed.",
+  "sub": "Same timeline, same price line, same green button.",
+  "todayCap": "rebuilt from a recorded run, word for word",
+  "rows": [
+   {
+    "h": "Headline",
+    "idea": 1,
+    "was": "“How your free trial works”, the same for everyone",
+    "now": "“Your 7 free days start with Start With Why”, the title their answer picked"
+   },
+   {
+    "h": "Proof",
+    "idea": 2,
+    "was": "None. The lower panel explains how to cancel",
+    "now": "4.8 ★ · 158K ratings, App of the Day and a member’s review; cancelling becomes one line"
+   },
+   {
+    "h": "Right before it",
+    "idea": 4,
+    "was": "A loader, then the paywall; the first Play comes after sign-up",
+    "now": "Two free minutes of their first title"
+   },
+   {
+    "h": "On ✕",
+    "idea": 5,
+    "was": "Not in the recording",
+    "now": "Once: the monthly plan, $12.99, no yearly commitment"
+   },
+   {
+    "h": "Right after it",
+    "idea": 3,
+    "was": "Notifications were asked on welcome slide 3",
+    "now": "Asked here, as the Day 5 reminder the timeline promises"
+   }
+  ],
+  "kept": "Kept: the Today · Day 5 · Day 7 timeline, “Unlimited free access for 7 days, then $79.99 per year ($6.67/month)”, View all plans, and “Start my free trial now · 2 taps to start, super easy to cancel”."
+ },
+ "tour": {
+  "introLede": "Five ideas to turn more Blinkist readers into subscribers. <span>Built into your own onboarding.</span>",
+  "endTitle": "Five ideas, built into your own onboarding.",
+  "segments": [
+   {
+    "id": "welcome",
+    "d": 3300,
+    "tap": [
+     ".k-btn",
+     2800
+    ]
+   },
+   {
+    "id": "goal",
+    "d": 2800,
+    "pop": ".k-tag",
+    "tap": [
+     "[data-pick='goal:career']",
+     2300
+    ]
+   },
+   {
+    "id": "topics",
+    "d": 2200,
+    "tap": [
+     ".k-foot .k-btn",
+     1700
+    ]
+   },
+   {
+    "id": "titles",
+    "d": 1800,
+    "tap": [
+     ".k-up",
+     1300
+    ]
+   },
+   {
+    "id": "titles",
+    "d": 1400,
+    "st": {
+     "card": "1"
+    },
+    "tap": [
+     ".k-up",
+     950
+    ]
+   },
+   {
+    "id": "loader",
+    "d": 2400,
+    "reveal": ".k-chk3"
+   },
+   {
+    "id": "listen",
+    "d": 1600,
+    "st": {
+     "play": "off"
+    },
+    "tap": [
+     "[data-pick='play:on']",
+     1100
+    ]
+   },
+   {
+    "id": "listen",
+    "d": 2100,
+    "st": {
+     "play": "on"
+    },
+    "tap": [
+     ".k-foot .k-btn",
+     1650
+    ]
+   },
+   {
+    "id": "paywall",
+    "d": 3300,
+    "reveal": ".k-proofrow",
+    "tap": [
+     ".s-x",
+     2850
+    ]
+   },
+   {
+    "id": "offer",
+    "d": 2800,
+    "pop": ".k-offcard",
+    "tap": [
+     ".s-x",
+     2350
+    ]
+   },
+   {
+    "id": "paywall",
+    "d": 1400,
+    "tap": [
+     ".k-wave .k-btn",
+     950
+    ]
+   },
+   {
+    "id": "started",
+    "d": 2500,
+    "st": {
+     "plan": "year",
+     "notif": "off"
+    },
+    "tap": [
+     "[data-pick='notif:ask'][data-show='notif:off']",
+     2000
+    ]
+   },
+   {
+    "id": "started",
+    "d": 1800,
+    "st": {
+     "notif": "ask"
+    },
+    "tap": [
+     ".k-allow",
+     1350
+    ]
+   },
+   {
+    "id": "started",
+    "d": 2700,
+    "st": {
+     "notif": "on"
+    },
+    "end": true
+   }
+  ],
+  "captions": {
+   "welcome": {
+    "k": "Context",
+    "t": "Your welcome, kept",
+    "l": "A paid-social click arrives on your own first screen."
+   },
+   "goal": {
+    "n": 1,
+    "t": "Ask why they came, then say it back",
+    "l": "One question first, pre-selected from the ad.",
+    "o": "CR +10–20%",
+    "ol": "to purchase"
+   },
+   "topics": {
+    "k": "Context",
+    "t": "Your topics, pre-ticked",
+    "l": "The answer already ticks Career & Business."
+   },
+   "titles": {
+    "k": "Context",
+    "t": "Your title game, kept",
+    "l": "Thumbs up saves a title to the library."
+   },
+   "loader": {
+    "k": "Context",
+    "t": "Your loader, naming what’s next",
+    "l": "The third check names their first title."
+   },
+   "listen": {
+    "n": 4,
+    "t": "Let them hear it before they pay",
+    "l": "Two free minutes of Start With Why.",
+    "o": "CR +5–15%",
+    "ol": "to purchase"
+   },
+   "paywall": {
+    "n": 2,
+    "t": "4.8 stars and App of the Day, on the paywall",
+    "l": "Plus a headline that names their title.",
+    "o": "CR +10–15%",
+    "ol": "to purchase"
+   },
+   "offer": {
+    "n": 5,
+    "t": "Catch the people who close it",
+    "l": "Once: the monthly plan, $12.99.",
+    "o": "ARPU +10–15%",
+    "ol": "from people who close the paywall"
+   },
+   "started": {
+    "n": 3,
+    "t": "Notifications, after the trial starts",
+    "l": "Asked as the Day 5 reminder, not on slide 3.",
+    "o": "CR +10–15%",
+    "ol": "to purchase"
+   }
+  }
+ },
+ "grounding": "Impact ranges are Adapty’s expected effect from teardowns and A/B tests across 30,000+ subscription apps, not measured lift for Blinkist. They overlap, so they don’t add up.",
+ "sources": [
+  {
+   "group": "Prices",
+   "items": [
+    {
+     "dt": "$79.99 a year · $12.99 a month",
+     "dd": "US App Store listing, In-App Purchases: “Blinkist Premium (1 Year)” at $79.99 (listed twice) and “Blinkist Premium (1 Month)” at $12.99, the lowest Premium pair. $6.67 a month is $79.99 ÷ 12."
+    },
+    {
+     "dt": "79,99 € a year · 12,99 € a month",
+     "dd": "German App Store listing (apps.apple.com/de): “Blinkist Premium (1 Jahr)” 79,99 €, “Blinkist Premium (1 Month)” 12,99 €. Your recorded paywall shows the same 79,99 € (6,67 €/month)."
+    },
+    {
+     "dt": "7-day free trial",
+     "dd": "Your recorded paywall (“Unlimited free access for 7 days”) and “Your 7-day trial has started!”. We assume the same trial on the US yearly plan."
+    },
+    {
+     "dt": "Not used",
+     "dd": "US: $99.99 and $119.99 (1 year), $15.99 (1 month), $89.99 and $14.99 (Premium), $139.99 (Pro). Germany: 109,99 € (Pro), 25,99 € (Premium, period not stated)."
+    }
+   ]
+  },
+  {
+   "group": "Proof",
+   "items": [
+    {
+     "dt": "4.8 ★ · 158K ratings",
+     "dd": "US App Store listing, October 2026 (4.77 from 157,589 ratings). Germany: 4,7 ★ from 112.982 ratings, used on the German paywall."
+    },
+    {
+     "dt": "App of the Day",
+     "dd": "Your first App Store screenshot (laurels cut from it)."
+    },
+    {
+     "dt": "“Life changing…” · Jonathan A.",
+     "dd": "The review quoted on your App Store screenshots, shown as written. The German wording is our translation."
+    },
+    {
+     "dt": "9,000+ titles",
+     "dd": "Your App Store description (“9,000+ top books and podcasts”)."
+    }
+   ]
+  },
+  {
+   "group": "Features and copy",
+   "items": [
+    {
+     "dt": "Kept word for word",
+     "dd": "Welcome (“Understand powerful ideas in 15 mins”), the topic question and its seven answers, the title game, the loader’s checks, “Start your first title”, the whole trial paywall, “Your 7-day trial has started!” and the iOS prompt text."
+    },
+    {
+     "dt": "New copy",
+     "dd": "“What brings you to Blinkist?” and its four answers, the “From your ad” tag, the 2-minute preview line, the paywall headline, the monthly offer and the reminder card are ours."
+    },
+    {
+     "dt": "Titles and lengths",
+     "dd": "Covers and minutes from your App Store screenshots (Start With Why 24 min, The 7 Habits 23 min, Thinking, Fast and Slow 28 min, Never Split the Difference, Zero to One) and your recorded For You screen (The Psychology of Money, 25 min)."
+    },
+    {
+     "dt": "German",
+     "dd": "Our translation, not your German copy. Book titles stay in English, as on the covers."
+    }
+   ]
+  },
+  {
+   "group": "Design",
+   "items": [
+    {
+     "dt": "Colours and type",
+     "dd": "Sampled off your recorded screens (#042134 background, #033049 cards, #0a314c panel) and blinkist.com’s tokens (brand-green #2ee081, brand-blue #0266f2, midnight #033049). Your font, Cera Pro, is licensed; the prototype uses Figtree, the closest Google family."
+    },
+    {
+     "dt": "Art",
+     "dd": "The reader illustration, laurels and covers are cut from your App Store screenshots; the welcome banner and loader illustration from your recorded screens. Your logo mark from blinkist.com."
+    }
+   ]
+  },
+  {
+   "group": "What we couldn’t see",
+   "items": [
+    {
+     "dt": "Your test history and ad set-up",
+     "dd": "We worked from a recorded iOS run (its paywall date suggests early 2024) and your public listings. Your current flow may differ, and “From your ad” assumes the ad’s topic can reach the app on install."
+    },
+    {
+     "dt": "What ✕ and “View all plans” do",
+     "dd": "Neither was opened in the recording, so the offer is new and the plan list is untouched."
+    },
+    {
+     "dt": "A 2-minute preview",
+     "dd": "We assume a free preview of one title is possible before purchase, as with your free Blink of the Day."
+    },
+    {
+     "dt": "Android",
+     "dd": "We saw the iOS flow only."
+    }
+   ]
+  }
+ ]
+}
+</script>
+
+<script>
+/* Blinkist hooks: the first title follows the goal; dates follow the language; the title game and the
+   reminder start fresh each time they are entered. Cover files used per goal (listed literally for publish-gh):
+   assets/crop/cover-why.png assets/crop/cover-money.png assets/crop/cover-habits.png assets/crop/cover-thinking.png */
+var BOOKS = {
+  career: {t: 'Start With Why', by: 'Simon Sinek', m: 24, topic: 'career'},
+  money:  {t: 'The Psychology of Money', by: 'Morgan Housel', m: 25, topic: 'money'},
+  habits: {t: 'The 7 Habits of Highly Effective People', by: 'Stephen R. Covey', m: 23, topic: 'growth'},
+  mind:   {t: 'Thinking, Fast and Slow', by: 'Daniel Kahneman', m: 28, topic: 'culture'}
+};
+var MONTHS = {
+  en: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+  de: ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember']
+};
+function dayPlus(n){ var d = new Date(); d.setHours(12); d.setDate(d.getDate() + n); return d; }
+function fmtDate(d, l){ var M = MONTHS[l] || MONTHS.en; return l === 'de' ? d.getDate() + '. ' + M[d.getMonth()] : M[d.getMonth()] + ' ' + d.getDate(); }
+window.onSync = function(S){
+  var b = BOOKS[S.goal] || BOOKS.career, l = S.lang || 'en';
+  document.querySelectorAll('[data-book]').forEach(function(el){ el.textContent = b.t; });
+  document.querySelectorAll('[data-bookby]').forEach(function(el){ el.textContent = b.by; });
+  document.querySelectorAll('[data-bookmin]').forEach(function(el){ el.textContent = '· ' + b.m + ' min'; });
+  document.querySelectorAll('.k-d7').forEach(function(el){ el.textContent = fmtDate(dayPlus(7), l); });
+  document.querySelectorAll('.k-d5').forEach(function(el){ el.textContent = fmtDate(dayPlus(5), l); });
+  var on = S.play === 'on';
+  document.querySelectorAll('.k-bar i').forEach(function(el){ el.style.width = on ? '40%' : '0'; });
+  document.querySelectorAll('.k-t0').forEach(function(el){ el.textContent = on ? '0:48' : '0:00'; });
+};
+window.onEnter = function(id, S){
+  if (id === 'topics' && S._g !== S.goal) { S.topics = [(BOOKS[S.goal] || BOOKS.career).topic]; S._g = S.goal; sync(); }
+  if (id === 'titles') { S.card = '0'; sync(); }
+  if (id === 'listen' && !HERO) { S.play = 'off'; sync(); }
+  if (id === 'started' && !HERO) { S.notif = 'off'; sync(); }
+  if (id === 'loader' && !SHOT) setTimeout(function(){ if (cur === 'loader') go('listen'); }, 2600);
+};
+document.addEventListener('click', function(e){
+  var v = e.target.closest('[data-vote]'); if (!v) return;
+  var n = (+S.card || 0) + 1;
+  if (n >= 2) { setTimeout(function(){ if (cur === 'titles') go('loader'); }, 220); return; }
+  S.card = String(n); sync();
+});
+
+</script>
+<script>
+/* ============ engine — generic, do not fork per app ============ */
+var C = JSON.parse(document.getElementById('content').textContent);
+var S = C.state, scr = {}, ORDER = [], hist = [], cur = null, Q = location.search;
+var SHOT = /[?&](shot|phone|tour)\b/.test(Q), HERO = /[?&]hero\b/.test(Q);
+/* a screen with data-aside (e.g. the paywall TODAY for the side-by-side) renders for stills but is not part of the flow */
+document.querySelectorAll('.scr').forEach(function(s){ scr[s.dataset.id] = s; if (!s.hasAttribute('data-aside')) ORDER.push(s.dataset.id); });
+if (/[?&]shot\b/.test(Q)) document.documentElement.classList.add('shot');
+if (/[?&]phone\b/.test(Q)) document.documentElement.classList.add('shot', 'phoneonly');
+if (/[?&]clear\b/.test(Q)) document.documentElement.classList.add('clear');
+var IDEAS = (C.ideas || []).length;
+
+/* ---- languages: markup is the first language; C.i18n[lang][data-t key] the others; {tokens} from C.prices[lang] ---- */
+var LANGS = C.langs || [], BASE = LANGS.length ? LANGS[0].code : 'en', LANG_DONE = BASE, BASE_LABELS = JSON.parse(JSON.stringify(C.labels || {}));
+if (!S.lang) S.lang = BASE;
+function fillP(s, l){ var P = (C.prices || {})[l] || {}; return String(s).replace(/\{(\w+)\}/g, function(m, k){ return k in P ? P[k] : m; }); }
+function applyLang(){
+  var l = S.lang || BASE; if (l === LANG_DONE) return;
+  var T = (C.i18n || {})[l] || {};
+  document.querySelectorAll('.phone [data-t]').forEach(function(el){
+    if (el._base == null) el._base = el.innerHTML;
+    el.innerHTML = l === BASE || T[el.dataset.t] == null ? el._base : fillP(T[el.dataset.t], l);
+  });
+  C.labels = JSON.parse(JSON.stringify(BASE_LABELS));
+  var LL = (C.labelsI18n || {})[l] || {}; Object.keys(LL).forEach(function(k){ C.labels[k] = LL[k]; });
+  LANG_DONE = l;
+}
+function setLang(l){
+  if (!LANGS.some(function(x){ return x.code === l; })) return;
+  S.lang = l; sync();
+  document.querySelectorAll('[data-setlang]').forEach(function(b){ b.classList.toggle('on', b.dataset.setlang === l); });
+  if (window.onLang) window.onLang(l);
+}
+
+function lab(key){ var v = S[key]; var L = C.labels[key]; if (Array.isArray(v)) return v.map(function(x){ return L && L[x] || x; }).join(', '); return (L && L[v]) || v; }
+function sync(){
+  applyLang();
+  document.querySelectorAll('[data-bind]').forEach(function(el){
+    var b = el.dataset.bind, m = b.split(':');
+    el.textContent = m[0] === 'label' ? lab(m[1]) : m[0] === 'count' ? (S[m[1]] || []).length : (S[b] == null ? '' : S[b]);
+  });
+  document.querySelectorAll('[data-pick]').forEach(function(el){ var p = el.dataset.pick.split(':'); el.classList.toggle('on', S[p[0]] === p[1]); });
+  document.querySelectorAll('[data-toggle]').forEach(function(el){ var p = el.dataset.toggle.split(':'); el.classList.toggle('on', (S[p[0]] || []).indexOf(p[1]) > -1); });
+  document.querySelectorAll('[data-requires]').forEach(function(el){ el.disabled = !(S[el.dataset.requires] || []).length; });
+  document.querySelectorAll('[data-show]').forEach(function(el){ var p = el.dataset.show.split(':'); el.style.display = String(S[p[0]]) === p[1] ? '' : 'none'; });
+  if (window.onSync) window.onSync(S);
+}
+function show(id, dir){
+  var from = scr[cur], to = scr[id]; if (!to || id === cur) return;
+  var sheet = to.classList.contains('sheet');
+  if (from){
+    from.classList.remove('is-active');
+    if (sheet) from.classList.add('under');                                   /* a sheet slides up over the screen that opened it */
+    else if (dir === 'fwd' && !from.classList.contains('sheet')) from.classList.add('is-past');
+  }
+  if (!sheet) Object.keys(scr).forEach(function(k){ var u = scr[k]; if (u !== to && u.classList.contains('under')) { u.classList.remove('under'); if (dir === 'fwd') u.classList.add('is-past'); } });
+  to.classList.remove('is-past', 'under'); to.classList.add('is-active'); cur = id;
+  paint(); if (window.onEnter) window.onEnter(id, S);
+}
+function go(id){ if (cur) hist.push(cur); show(id, 'fwd'); }
+function back(){ if (hist.length) { var p = hist.pop(); scr[cur].classList.remove('is-active'); show(p, 'back'); } }
+function jump(id){
+  Object.keys(scr).forEach(function(k){ scr[k].classList.add('nofx'); scr[k].classList.remove('is-active', 'is-past', 'under'); });
+  var i = ORDER.indexOf(id); hist = ORDER.slice(0, i < 0 ? 0 : i); cur = null;
+  ORDER.slice(0, i).forEach(function(k){ if (!scr[k].classList.contains('sheet')) scr[k].classList.add('is-past'); });
+  if (scr[id] && scr[id].classList.contains('sheet')) {                        /* jumping to a sheet: its opener stays visible under it */
+    for (var j = i - 1; j >= 0; j--) if (!scr[ORDER[j]].classList.contains('sheet')) { scr[ORDER[j]].classList.remove('is-past'); scr[ORDER[j]].classList.add('under'); break; }
+  }
+  show(id, 'jump');
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ Object.keys(scr).forEach(function(k){ scr[k].classList.remove('nofx'); }); }); });
+}
+function stepBy(d){ var i = ORDER.indexOf(cur) + d; if (i >= 0 && i < ORDER.length) jump(ORDER[i]); }
+function jumpTo(id){
+  var p = document.getElementById('prototype');
+  if (p && !document.documentElement.classList.contains('appmode')) p.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'});
+  jump(id);
+}
+function paint(){
+  sync();
+  var c = document.getElementById('chips');
+  if (!c.childElementCount) ORDER.forEach(function(id){
+    var p = C.panel[id] || {}, b = document.createElement('button');
+    b.className = 'au-chip'; b.type = 'button'; b.dataset.id = id; b.setAttribute('role', 'tab');
+    b.innerHTML = (p.idea ? '<i>' + p.idea + '</i>' : '') + ((C.chips && C.chips[id]) || id);
+    b.onclick = function(){ jump(id); };
+    c.appendChild(b);
+  });
+  c.querySelectorAll('.au-chip').forEach(function(b){ var on = b.dataset.id === cur; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  var d = C.panel[cur] || {t: cur, why: ''}, n = ORDER.indexOf(cur) + 1;
+  document.getElementById('panel').innerHTML =
+    (d.idea ? '<div class="au-pn-k"><i></i>Idea ' + d.idea + ' of ' + IDEAS + '</div>' : '<div class="au-pn-k au-ctx"><i></i>Context</div>') +
+    '<h3 class="au-pn-t">' + d.t + '</h3><p class="au-pn-h">' + d.why + '</p>' +
+    (d.iv ? '<div class="au-pn-o"><div class="au-lab">Potential outcome · based on Adapty data</div><div class="au-val"><mark>' + d.iv + '</mark></div><div class="au-sub">' + (d.il || '') + '</div></div>' : '') +
+    (d.also ? '<p class="au-pn-a">' + d.also + '</p>' : '') +
+    '<div class="au-pn-nav"><button type="button" onclick="stepBy(-1)"' + (n <= 1 ? ' disabled' : '') + '>‹ Previous</button><span>Screen ' + n + ' of ' + ORDER.length + '</span><button type="button" onclick="stepBy(1)"' + (n === ORDER.length ? ' disabled' : '') + '>Next ›</button></div>';
+  var ab = document.getElementById('abT'); if (ab) ab.textContent = (d.idea ? 'Idea ' + d.idea + ' of ' + IDEAS + ' · ' : '') + (d.t || '');
+}
+document.addEventListener('click', function(e){
+  var j = e.target.closest('[data-jumpto]'); if (j){ e.preventDefault(); jumpTo(j.dataset.jumpto); return; }
+  var L = e.target.closest('[data-setlang]'); if (L){ setLang(L.dataset.setlang); return; }
+  if (e.target.closest('[data-langtoggle]') && LANGS.length > 1){ var k = LANGS.findIndex(function(x){ return x.code === S.lang; }); setLang(LANGS[(k + 1) % LANGS.length].code); return; }
+  var el = e.target.closest('[data-go],[data-back],[data-pick],[data-toggle]'); if (!el) return;
+  if (el.dataset.pick){ var p = el.dataset.pick.split(':'); S[p[0]] = p[1]; sync(); if (el.dataset.advance) setTimeout(function(){ go(el.dataset.advance); }, 170); return; }
+  if (el.dataset.toggle){ var q = el.dataset.toggle.split(':'), a = S[q[0]] = S[q[0]] || [], i = a.indexOf(q[1]); if (i > -1) a.splice(i, 1); else a.push(q[1]); sync(); return; }
+  if ('back' in el.dataset) return back();
+  go(el.dataset.go);
+});
+document.querySelectorAll('[data-input]').forEach(function(inp){
+  inp.value = S[inp.dataset.input] || ''; inp.addEventListener('input', function(){ S[inp.dataset.input] = inp.value.trim() || 'there'; sync(); });
+});
+function $(id){ return document.getElementById(id); }
+
+/* hero stills, shortlist, outcome, sources — from CONTENT */
+$('heroPhones').innerHTML = (C.hero || []).map(function(id, i){
+  var pos = ['l', 'c', 'r'][i] || 'r', t = (C.chips && C.chips[id]) || id;
+  return '<button class="au-hp au-' + pos + '" data-jumpto="' + id + '" aria-label="Open ' + t + '"><img src="assets/hero/' + id + '.png" alt=""></button>';
+}).join('');
+$('ideaList').innerHTML = (C.ideas || []).map(function(r, i){
+  return '<article class="au-idea"><div class="au-num">0' + (i + 1) + '</div><div><h3>' + r.title + '</h3><p>' + r.what + '</p>' +
+    '<button type="button" class="au-lnk" data-jumpto="' + r.screen + '">See it on the screen</button></div>' +
+    '<div class="au-imp"><div class="au-v"><mark>' + r.impact + '</mark></div><div class="au-l">' + r.il + '</div></div></article>';
+}).join('');
+var O = C.outcome || {};
+$('bandNums').innerHTML =
+  (O.cr ? '<div><small>up to</small><b>' + O.cr + '</b><span>CR to purchase</span></div>' : '') +
+  (O.arpu ? '<div><small>up to</small><b>' + O.arpu + '</b><span>ARPU</span></div>' : '');
+$('bandFn').textContent = C.grounding;
+$('fine').textContent = C.grounding + ' Prepared by Adapty.';
+$('srcBody').innerHTML = C.sources.map(function(g){
+  return '<div><h4>' + g.group + '</h4><dl>' + g.items.map(function(it){ return '<dt>' + it.dt + '</dt><dd>' + it.dd + '</dd>'; }).join('') + '</dl></div>';
+}).join('');
+function openSrc(){ var d = $('srcDetails'); d.open = true; d.scrollIntoView({block: 'start'}); }
+
+/* ---- extras: language control, the paywall side by side, QR / phone view, the video ---- */
+if (LANGS.length > 1) {
+  $('langRow').hidden = false;
+  var lb = LANGS.map(function(x){ return '<button type="button" data-setlang="' + x.code + '">' + x.name + '</button>'; }).join('');
+  $('langSw').innerHTML = lb;
+  $('abLang').innerHTML = LANGS.map(function(x){ return '<button type="button" data-setlang="' + x.code + '">' + x.code.toUpperCase() + '</button>'; }).join('');
+}
+var CM = C.compare;
+if (CM && scr[CM.today] && scr[CM.proposed]) {
+  $('compare').hidden = false; $('navCompare').hidden = false;
+  $('cmpBody').innerHTML = '<div class="au-ideas-h"><p class="au-kicker">' + (CM.kicker || 'The paywall, side by side') + '</p><h2 class="au-h2">' + (CM.title || 'Today and proposed.') + (CM.sub ? ' <span>' + CM.sub + '</span>' : '') + '</h2></div>' +
+    '<div class="au-cmp"><figure><img src="assets/hero/' + CM.today + '.png" alt="Your paywall today"><figcaption>Today <span>· ' + (CM.todayCap || 'rebuilt from your recording') + '</span></figcaption></figure>' +
+    '<ol class="au-chg">' + (CM.rows || []).map(function(r){
+      return '<li><h4>' + r.h + (r.idea ? ' <i>Idea ' + r.idea + '</i>' : '') + '</h4><span class="au-was"><em>Today</em>' + r.was + '</span><span class="au-now"><em>Proposed</em>' + r.now + '</span></li>';
+    }).join('') + '</ol>' +
+    '<figure><button type="button" class="au-cmp-go" data-jumpto="' + CM.proposed + '" aria-label="Open the proposed paywall"><img src="assets/hero/' + CM.proposed + '.png" alt="The proposed paywall"></button><figcaption>Proposed <span>· tap to try it</span></figcaption></figure></div>' +
+    (CM.kept ? '<p class="au-kept">' + CM.kept + '</p>' : '');
+}
+if (C.liveUrl) { $('qrCard').hidden = false; $('qrMob').hidden = false; }
+if (/[?&]app\b/.test(Q)) {
+  var H0 = document.documentElement; H0.classList.add('appmode');
+  var openP = function(o){ H0.classList.toggle('au-open', o); $('abWhy').querySelector('em').textContent = o ? 'Close ↓' : 'Why ↑'; };
+  $('abWhy').onclick = function(){ openP(!H0.classList.contains('au-open')); };
+  $('abScrim').onclick = function(){ openP(false); };
+}
+if (C.video) {
+  var dlg = $('vid'), vel = $('vidEl'); vel.src = C.video; if (C.poster) vel.poster = C.poster; $('vidDl').href = C.video;
+  $('heroVideo').hidden = false;
+  $('heroVideo').onclick = function(){ dlg.showModal(); vel.play().catch(function(){}); };
+  $('vidX').onclick = function(){ dlg.close(); };
+  dlg.addEventListener('close', function(){ vel.pause(); });
+  dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
+}
+
+/* ---- ?tour: a deterministic walkthrough from C.tour — tourAt(ms) paints one frame; record-video.sh records it ---- */
+function tourInit(){
+  var T = C.tour, H = document.documentElement, TR = T.transition || 360;
+  H.classList.add('tourmode', 'shot'); document.body.classList.add('nofx');
+  var SEG = T.segments, START = [], STATE = [], UNDER = [], acc = 0, st = JSON.parse(JSON.stringify(C.state));
+  SEG.forEach(function(s, i){
+    START.push(acc); acc += s.d;
+    Object.keys(s.st || {}).forEach(function(k){ st[k] = s.st[k]; }); STATE.push(JSON.parse(JSON.stringify(st)));
+    var u = null; if (scr[s.id].classList.contains('sheet')) for (var j = i - 1; j >= 0; j--) if (!scr[SEG[j].id].classList.contains('sheet')) { u = SEG[j].id; break; }
+    UNDER.push(u);
+  });
+  var TOTAL = acc, capEl = $('tCap'), tap = $('tTap'), pressed = null, popped = [];
+  $('tIntro').innerHTML = '<p class="au-eyebrow"><i></i>' + document.querySelector('.au-top-hero .au-eyebrow').textContent + '</p><h1 class="au-display">' + C.app + '</h1>' +
+    '<p class="au-lede">' + (T.introLede || document.querySelector('.au-top-hero .au-lede').innerHTML) + '</p>';
+  $('tEnd').innerHTML = '<p class="au-eyebrow"><i></i>Growth Audit · ' + C.app + '</p><h2 class="au-te-h">' + (T.endTitle || 'Five ideas, built into your own onboarding.') + '</h2>' +
+    '<div class="au-te-n">' + (O.cr ? '<div><small>up to</small><b>' + O.cr + '</b><span>CR to purchase</span></div>' : '') + (O.arpu ? '<div><small>up to</small><b>' + O.arpu + '</b><span>ARPU</span></div>' : '') + '</div>' +
+    (C.liveUrl ? '<div class="au-te-q"><img src="assets/qr-app.png" alt=""><div><b>Try it on your phone</b><span>' + C.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') + '</span></div></div>' : '') +
+    '<p class="au-te-f">' + C.grounding + '</p>';
+  function ease(x){ return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
+  function easeBack(x){ var c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); }
+  function capHTML(c){
+    c = c || {k: '', t: '', l: ''};
+    return '<div class="au-tk' + (c.n ? '' : ' au-ctx') + '"><i></i>' + (c.n ? 'Idea ' + c.n + ' of ' + IDEAS : (c.k || 'Context')) + '</div><h2 class="au-tt">' + c.t + '</h2><p class="au-tl">' + (c.l || '') + '</p>' +
+      (c.o ? '<div class="au-to"><small>Potential outcome · based on Adapty data</small><b><mark>' + c.o + '</mark></b><span>' + (c.ol || '') + '</span></div>' : '');
+  }
+  function place(id, tf, z){ scr[id].style.transform = tf; scr[id].style.zIndex = z; }
+  window.TOUR_MS = TOTAL;
+  window.tourAt = function(ms){
+    ms = Math.max(0, Math.min(TOTAL - 1, ms));
+    var i = 0; while (i < SEG.length - 1 && ms >= START[i + 1]) i++;
+    var s = SEG[i], local = ms - START[i], prev = i > 0 ? SEG[i - 1] : null;
+    Object.keys(STATE[i]).forEach(function(k){ S[k] = STATE[i][k]; }); sync();
+    var moving = prev && prev.id !== s.id && local < TR, p = moving ? ease(local / TR) : 1;
+    Object.keys(scr).forEach(function(k){ scr[k].classList.remove('is-active', 'is-past', 'under'); place(k, 'translateX(100%)', 0); });
+    var B = scr[s.id];
+    if (moving) {
+      if (B.classList.contains('sheet')) { place(prev.id, 'none', 1); B.style.transform = 'translateY(' + (1 - p) * 100 + '%)'; }
+      else {
+        var slide = 'translateX(' + (-28 * p) + '%)'; place(prev.id, slide, 1); B.style.transform = 'translateX(' + (1 - p) * 100 + '%)';
+        if (UNDER[i - 1]) place(UNDER[i - 1], slide, 0);
+      }
+    } else B.style.transform = 'none';
+    B.style.zIndex = 2;
+    if (UNDER[i] && !moving) place(UNDER[i], 'none', 1);
+    /* optional reveal: s.pop scales an element in, s.reveal fades one in a beat later */
+    popped.forEach(function(e){ e.style.transform = ''; e.style.opacity = ''; }); popped = [];
+    var q = Math.max(0, Math.min(1, (local - 250) / 550));
+    if (s.pop) { var pe = B.querySelector(s.pop); if (pe) { pe.style.transform = 'scale(' + (.55 + .45 * easeBack(q)) + ')'; pe.style.opacity = Math.min(1, q * 1.6); popped.push(pe); } }
+    if (s.reveal) { var re = B.querySelector(s.reveal); if (re) { re.style.opacity = Math.max(0, Math.min(1, (local - 520) / 300)); popped.push(re); } }
+    /* caption crossfades at screen changes; waits for the intro, gives way to the end card */
+    var key = s.id, op = 1;
+    if (moving) { if (p < .5) { key = prev.id; op = 1 - p * 2; } else op = p * 2 - 1; }
+    if (capEl.dataset.k !== key) { capEl.innerHTML = capHTML(T.captions[key]); capEl.dataset.k = key; }
+    var io = ms < 1100 ? 1 : Math.max(0, 1 - (ms - 1100) / 300), eo = s.end ? Math.min(1, local / 350) : 0;
+    capEl.style.opacity = op * Math.max(0, Math.min(1, (ms - 1400) / 300)) * (1 - eo);
+    /* the finger: fades in, taps, ripples out. Selectors are scoped to the screen */
+    tap.style.opacity = 0; if (pressed) { pressed.style.opacity = ''; pressed = null; }
+    if (s.tap) {
+      var el = B.querySelector(s.tap[0]), dt = local - s.tap[1];
+      if (el && dt > -260 && dt < 420) {
+        var r = el.getBoundingClientRect();
+        tap.style.left = (r.left + r.width / 2) + 'px'; tap.style.top = (r.top + r.height / 2) + 'px';
+        if (dt < 0) { tap.style.opacity = (dt + 260) / 260 * .9; tap.style.transform = 'scale(1)'; }
+        else { tap.style.opacity = .9 * (1 - dt / 420); tap.style.transform = 'scale(' + (1 + dt / 420 * .9) + ')'; }
+        if (dt >= 0 && dt < 160) { el.style.opacity = .72; pressed = el; }
+      }
+    }
+    $('tIntro').style.opacity = T.intro === false ? 0 : io;
+    $('tEnd').style.opacity = eo;
+    $('tProg').style.width = (ms / TOTAL * 100) + '%';
+    cur = s.id;
+    return i;
+  };
+  var tm = /[?&]t=(\d+)/.exec(Q); tourAt(tm ? +tm[1] : 0);
+}
+
+/* boot: #<screen-id> deep-links a screen (shoot.sh / hero-stills.sh use it); ?lang=xx picks the language */
+(function(){
+  var lm = /[?&]lang=(\w+)/.exec(Q); if (lm) setLang(lm[1]); else setLang(S.lang);
+  var h = location.hash.slice(1);
+  jump(scr[h] ? h : ORDER[0]);
+  if (scr[h] && !SHOT && !document.documentElement.classList.contains('appmode')) setTimeout(function(){ $('prototype').scrollIntoView(); }, 0);
+  if (/[?&]tour\b/.test(Q) && C.tour) tourInit();
+})();
+</script>
+</body>
+</html>
